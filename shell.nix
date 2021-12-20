@@ -1,4 +1,4 @@
-{pkgs ? import ./nixpkgs.nix {}}:
+{pkgs ? import <nixpkgs> {}}:
 
 with pkgs;
 
@@ -15,6 +15,7 @@ mkShell {
     which
     glibcLocales
     cacert
+    haskell.compiler.ghc8107
   ];
 
 }

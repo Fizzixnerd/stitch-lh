@@ -1,6 +1,6 @@
+cabal-version:  3.0
 name:           stitch-lh
 version:        1.0
-cabal-version:  >= 1.10
 synopsis:       A simply typed lambda calculus interpreter, written with GADTs
 homepage:       https://gitlab.com/goldfirere/stitch
 category:       Compilers/Interpreters
@@ -8,7 +8,7 @@ author:         Richard Eisenberg <rae@richarde.dev>, Facundo Domínguez <facund
 maintainer:     Facundo Domínguez <facundominguez@gmail.com>
 stability:      unknown
 extra-source-files: README.md, CHANGES.md
-license:        BSD3
+license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
 description:

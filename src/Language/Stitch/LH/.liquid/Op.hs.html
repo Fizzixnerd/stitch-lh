@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<title>src/Language/Stitch/LH/Op.hs</title>
+</head>
+<head>
+<link type='text/css' rel='stylesheet' href='liquid.css' />
+</head>
+
+<body>
+<hr>
+Put mouse over identifiers to see inferred types
+<pre><span class=hs-linenum> 1: </span><a class=annot href="#"><span class=annottext>GHC.Types.Module</span><span class='hs-comment'>{-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}</span></a>
+<span class=hs-linenum> 2: </span><span class='hs-comment'>{-# OPTIONS_GHC -fplugin=LiquidHaskell #-}</span>
+<span class=hs-linenum> 3: </span>
+<span class=hs-linenum> 4: </span><span class='hs-comment'>-----------------------------------------------------------------------------</span>
+<span class=hs-linenum> 5: </span><span class='hs-comment'>-- |</span>
+<span class=hs-linenum> 6: </span><span class='hs-comment'>-- Module      :  Language.Stitch.LH.Op</span>
+<span class=hs-linenum> 7: </span><span class='hs-comment'>-- Copyright   :  (C) 2015 Richard Eisenberg</span>
+<span class=hs-linenum> 8: </span><span class='hs-comment'>-- License     :  BSD-style (see LICENSE)</span>
+<span class=hs-linenum> 9: </span><span class='hs-comment'>-- Maintainer  :  Richard Eisenberg (rae@richarde.dev)</span>
+<span class=hs-linenum>10: </span><span class='hs-comment'>-- Stability   :  experimental</span>
+<span class=hs-linenum>11: </span><span class='hs-comment'>--</span>
+<span class=hs-linenum>12: </span><span class='hs-comment'>-- Defines arithmetic and logical operators</span>
+<span class=hs-linenum>13: </span><span class='hs-comment'>--</span>
+<span class=hs-linenum>14: </span><span class='hs-comment'>----------------------------------------------------------------------------</span>
+<span class=hs-linenum>15: </span>
+<span class=hs-linenum>16: </span><span class='hs-keyword'>module</span> <span class='hs-conid'>Language.Stitch.LH.Op</span> <span class='hs-layout'>(</span>
+<span class=hs-linenum>17: </span>
+<span class=hs-linenum>18: </span>  <span class='hs-comment'>-- * Arithmetic operators</span>
+<span class=hs-linenum>19: </span>  <span class='hs-conid'>ArithOp</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>)</span><span class='hs-layout'>,</span> <span class='hs-varid'>arithType</span><span class='hs-layout'>,</span>
+<span class=hs-linenum>20: </span>
+<span class=hs-linenum>21: </span>  <span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
+<span class=hs-linenum>22: </span>
+<span class=hs-linenum>23: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>GHC.Generics</span>
+<span class=hs-linenum>24: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Data.Hashable</span>
+<span class=hs-linenum>25: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Language.Stitch.LH.Type</span>
+<span class=hs-linenum>26: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Language.Stitch.LH.Util</span> <span class='hs-layout'>(</span><span class='hs-varid'>render</span><span class='hs-layout'>)</span>
+<span class=hs-linenum>27: </span>
+<span class=hs-linenum>28: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Text.PrettyPrint.ANSI.Leijen</span>
+<span class=hs-linenum>29: </span>
+<span class=hs-linenum>30: </span><span class='hs-comment'>-- | An @ArithOp ty@ is an operator on numbers that produces a result</span>
+<span class=hs-linenum>31: </span><span class='hs-comment'>-- of type @ty@</span>
+<span class=hs-linenum>32: </span><a class=annot href="#"><span class=annottext>forall a .
+Language.Stitch.LH.Op.ArithOp -&gt; (GHC.Generics.Rep Language.Stitch.LH.Op.ArithOp a)</span><span class='hs-keyword'>data</span></a> <span class='hs-conid'>ArithOp</span>
+<span class=hs-linenum>33: </span>  <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Plus</span>
+<span class=hs-linenum>34: </span>  <span class='hs-keyglyph'>|</span> <span class='hs-conid'>Minus</span>
+<span class=hs-linenum>35: </span>  <span class='hs-keyglyph'>|</span> <span class='hs-conid'>Times</span>
+<span class=hs-linenum>36: </span>  <span class='hs-keyglyph'>|</span> <span class='hs-conid'>Divide</span>
+<span class=hs-linenum>37: </span>  <span class='hs-keyglyph'>|</span> <span class='hs-conid'>Mod</span>
+<span class=hs-linenum>38: </span>  <span class='hs-keyglyph'>|</span> <span class='hs-conid'>Less</span>
+<span class=hs-linenum>39: </span>  <span class='hs-keyglyph'>|</span> <span class='hs-conid'>LessE</span>
+<span class=hs-linenum>40: </span>  <span class='hs-keyglyph'>|</span> <span class='hs-conid'>Greater</span>
+<span class=hs-linenum>41: </span>  <span class='hs-keyglyph'>|</span> <span class='hs-conid'>GreaterE</span>
+<span class=hs-linenum>42: </span>  <span class='hs-keyglyph'>|</span> <span class='hs-conid'>Equals</span>
+<span class=hs-linenum>43: </span>  <span class='hs-keyword'>deriving</span> <span class='hs-layout'>(</span><span class='hs-conid'>Eq</span><span class='hs-layout'>,</span> <a class=annot href="#"><span class=annottext>(GHC.Generics.Generic Language.Stitch.LH.Op.ArithOp)</span><span class='hs-conid'>Generic</span></a><span class='hs-layout'>,</span> <a class=annot href="#"><span class=annottext>(Data.Hashable.Class.Hashable Language.Stitch.LH.Op.ArithOp)</span><span class='hs-conid'>Hashable</span></a><span class='hs-layout'>)</span>
+<span class=hs-linenum>44: </span>
+<span class=hs-linenum>45: </span><span class='hs-comment'>-- | Extract the result type of an Op</span>
+<span class=hs-linenum>46: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>measure</span> <span class='hs-varid'>arithType</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>47: </span><span class='hs-definition'>arithType</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>ArithOp</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Ty</span>
+<span class=hs-linenum>48: </span><a class=annot href="#"><span class=annottext>x1:Language.Stitch.LH.Op.ArithOp -&gt; {VV : Language.Stitch.LH.Type.Ty | VV == arithType x1}</span><span class='hs-definition'>arithType</span></a> <span class='hs-conid'>Plus</span>     <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{v : Language.Stitch.LH.Type.Ty | not (isFunTy v)
+                                  &amp;&amp; v == TInt}</span><span class='hs-conid'>TInt</span></a>
+<span class=hs-linenum>49: </span><span class='hs-definition'>arithType</span> <span class='hs-conid'>Minus</span>    <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{v : Language.Stitch.LH.Type.Ty | not (isFunTy v)
+                                  &amp;&amp; v == TInt}</span><span class='hs-conid'>TInt</span></a>
+<span class=hs-linenum>50: </span><span class='hs-definition'>arithType</span> <span class='hs-conid'>Times</span>    <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{v : Language.Stitch.LH.Type.Ty | not (isFunTy v)
+                                  &amp;&amp; v == TInt}</span><span class='hs-conid'>TInt</span></a>
+<span class=hs-linenum>51: </span><span class='hs-definition'>arithType</span> <span class='hs-conid'>Divide</span>   <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{v : Language.Stitch.LH.Type.Ty | not (isFunTy v)
+                                  &amp;&amp; v == TInt}</span><span class='hs-conid'>TInt</span></a>
+<span class=hs-linenum>52: </span><span class='hs-definition'>arithType</span> <span class='hs-conid'>Mod</span>      <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{v : Language.Stitch.LH.Type.Ty | not (isFunTy v)
+                                  &amp;&amp; v == TInt}</span><span class='hs-conid'>TInt</span></a>
+<span class=hs-linenum>53: </span><span class='hs-definition'>arithType</span> <span class='hs-conid'>Less</span>     <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{v : Language.Stitch.LH.Type.Ty | not (isFunTy v)
+                                  &amp;&amp; v == TBool}</span><span class='hs-conid'>TBool</span></a>
+<span class=hs-linenum>54: </span><span class='hs-definition'>arithType</span> <span class='hs-conid'>LessE</span>    <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{v : Language.Stitch.LH.Type.Ty | not (isFunTy v)
+                                  &amp;&amp; v == TBool}</span><span class='hs-conid'>TBool</span></a>
+<span class=hs-linenum>55: </span><span class='hs-definition'>arithType</span> <span class='hs-conid'>Greater</span>  <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{v : Language.Stitch.LH.Type.Ty | not (isFunTy v)
+                                  &amp;&amp; v == TBool}</span><span class='hs-conid'>TBool</span></a>
+<span class=hs-linenum>56: </span><span class='hs-definition'>arithType</span> <span class='hs-conid'>GreaterE</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{v : Language.Stitch.LH.Type.Ty | not (isFunTy v)
+                                  &amp;&amp; v == TBool}</span><span class='hs-conid'>TBool</span></a>
+<span class=hs-linenum>57: </span><span class='hs-definition'>arithType</span> <span class='hs-conid'>Equals</span>   <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{v : Language.Stitch.LH.Type.Ty | not (isFunTy v)
+                                  &amp;&amp; v == TBool}</span><span class='hs-conid'>TBool</span></a>
+<span class=hs-linenum>58: </span>
+<span class=hs-linenum>59: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>invariant</span> <span class='hs-keyword'>{ op:</span><span class='hs-conid'>ArithOp</span> <span class='hs-keyword'>| arithType op = TBool || arithType op = TInt }</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>60: </span>
+<span class=hs-linenum>61: </span><span class='hs-comment'>-------------------------------------</span>
+<span class=hs-linenum>62: </span><span class='hs-comment'>-- Pretty-printing</span>
+<span class=hs-linenum>63: </span>
+<span class=hs-linenum>64: </span><span class='hs-keyword'>instance</span> <a class=annot href="#"><span class=annottext>(Text.PrettyPrint.ANSI.Leijen.Internal.Pretty Language.Stitch.LH.Op.ArithOp)</span><span class='hs-conid'>Pretty</span></a> <span class='hs-conid'>ArithOp</span> <span class='hs-keyword'>where</span>
+<span class=hs-linenum>65: </span>  <a class=annot href="#"><span class=annottext>Language.Stitch.LH.Op.ArithOp -&gt; Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>pretty</span></a> <span class='hs-conid'>Plus</span>     <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>GHC.Types.Char -&gt; Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>char</span></a> <a class=annot href="#"><span class=annottext>{v : GHC.Types.Char | v == ((lit "43" Char) : Char)}</span><span class='hs-chr'>'+'</span></a>
+<span class=hs-linenum>66: </span>  <span class='hs-varid'>pretty</span> <span class='hs-conid'>Minus</span>    <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>GHC.Types.Char -&gt; Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>char</span></a> <a class=annot href="#"><span class=annottext>{v : GHC.Types.Char | v == ((lit "45" Char) : Char)}</span><span class='hs-chr'>'-'</span></a>
+<span class=hs-linenum>67: </span>  <span class='hs-varid'>pretty</span> <span class='hs-conid'>Times</span>    <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>GHC.Types.Char -&gt; Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>char</span></a> <a class=annot href="#"><span class=annottext>{v : GHC.Types.Char | v == ((lit "42" Char) : Char)}</span><span class='hs-chr'>'*'</span></a>
+<span class=hs-linenum>68: </span>  <span class='hs-varid'>pretty</span> <span class='hs-conid'>Divide</span>   <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>GHC.Types.Char -&gt; Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>char</span></a> <a class=annot href="#"><span class=annottext>{v : GHC.Types.Char | v == ((lit "47" Char) : Char)}</span><span class='hs-chr'>'/'</span></a>
+<span class=hs-linenum>69: </span>  <span class='hs-varid'>pretty</span> <span class='hs-conid'>Mod</span>      <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>GHC.Types.Char -&gt; Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>char</span></a> <a class=annot href="#"><span class=annottext>{v : GHC.Types.Char | v == ((lit "37" Char) : Char)}</span><span class='hs-chr'>'%'</span></a>
+<span class=hs-linenum>70: </span>  <span class='hs-varid'>pretty</span> <span class='hs-conid'>Less</span>     <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>GHC.Types.Char -&gt; Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>char</span></a> <a class=annot href="#"><span class=annottext>{v : GHC.Types.Char | v == ((lit "60" Char) : Char)}</span><span class='hs-chr'>'&lt;'</span></a>
+<span class=hs-linenum>71: </span>  <span class='hs-varid'>pretty</span> <span class='hs-conid'>LessE</span>    <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>[GHC.Types.Char] -&gt; Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>text</span></a> <a class=annot href="#"><span class=annottext>[GHC.Types.Char]</span><span class='hs-str'>"&lt;="</span></a>
+<span class=hs-linenum>72: </span>  <span class='hs-varid'>pretty</span> <span class='hs-conid'>Greater</span>  <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>GHC.Types.Char -&gt; Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>char</span></a> <a class=annot href="#"><span class=annottext>{v : GHC.Types.Char | v == ((lit "62" Char) : Char)}</span><span class='hs-chr'>'&gt;'</span></a>
+<span class=hs-linenum>73: </span>  <span class='hs-varid'>pretty</span> <span class='hs-conid'>GreaterE</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>[GHC.Types.Char] -&gt; Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>text</span></a> <a class=annot href="#"><span class=annottext>[GHC.Types.Char]</span><span class='hs-str'>"&gt;="</span></a>
+<span class=hs-linenum>74: </span>  <span class='hs-varid'>pretty</span> <span class='hs-conid'>Equals</span>   <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>[GHC.Types.Char] -&gt; Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>text</span></a> <a class=annot href="#"><span class=annottext>[GHC.Types.Char]</span><span class='hs-str'>"=="</span></a>
+<span class=hs-linenum>75: </span>
+<span class=hs-linenum>76: </span><span class='hs-keyword'>instance</span> <span class='hs-conid'>Show</span> <span class='hs-conid'>ArithOp</span> <span class='hs-keyword'>where</span>
+<span class=hs-linenum>77: </span>  <span class='hs-varid'>show</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>render</span> <span class='hs-varop'>.</span> <span class='hs-varid'>pretty</span>
+</pre>
+</body>
+</html>

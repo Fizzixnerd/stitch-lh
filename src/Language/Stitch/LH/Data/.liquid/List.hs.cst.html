@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<title>src/Language/Stitch/LH/Data/List.hs</title>
+</head>
+<head>
+<link type='text/css' rel='stylesheet' href='liquid.css' />
+</head>
+
+<body>
+<hr>
+Put mouse over identifiers to see inferred types
+<pre><span class=hs-linenum>  1: </span><a class=annot href="#"><span class=annottext>{VV##1610 : GHC.Types.Module | $k_##1611}</span><span class='hs-comment'>{-# OPTIONS_GHC -fplugin=LiquidHaskell -Wno-incomplete-patterns #-}</span></a>
+<span class=hs-linenum>  2: </span><span class='hs-keyword'>{-@</span> <span class='hs-conid'>LIQUID</span> <span class='hs-str'>"--exact-data-cons"</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>  3: </span><span class='hs-keyword'>{-@</span> <span class='hs-conid'>LIQUID</span> <span class='hs-str'>"--ple"</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>  4: </span>
+<span class=hs-linenum>  5: </span><span class='hs-comment'>-----------------------------------------------------------------------------</span>
+<span class=hs-linenum>  6: </span><span class='hs-comment'>-- |</span>
+<span class=hs-linenum>  7: </span><span class='hs-comment'>-- Module      :  Language.Stitch.LH.Data.List</span>
+<span class=hs-linenum>  8: </span><span class='hs-comment'>-- Copyright   :  (C) 2021 Facundo Domínguez</span>
+<span class=hs-linenum>  9: </span><span class='hs-comment'>-- License     :  BSD-style (see LICENSE)</span>
+<span class=hs-linenum> 10: </span><span class='hs-comment'>-- Stability   :  experimental</span>
+<span class=hs-linenum> 11: </span><span class='hs-comment'>--</span>
+<span class=hs-linenum> 12: </span><span class='hs-comment'>-- An interface of lists that can be used in reflected definitions</span>
+<span class=hs-linenum> 13: </span><span class='hs-comment'>-- with LH</span>
+<span class=hs-linenum> 14: </span><span class='hs-comment'>--</span>
+<span class=hs-linenum> 15: </span><span class='hs-comment'>----------------------------------------------------------------------------</span>
+<span class=hs-linenum> 16: </span>
+<span class=hs-linenum> 17: </span><span class='hs-keyword'>module</span> <span class='hs-conid'>Language.Stitch.LH.Data.List</span> <span class='hs-keyword'>where</span>
+<span class=hs-linenum> 18: </span>
+<span class=hs-linenum> 19: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Language.Haskell.Liquid.ProofCombinators</span> <span class='hs-layout'>(</span><span class='hs-layout'>(</span><span class='hs-varop'>?</span><span class='hs-layout'>)</span><span class='hs-layout'>,</span> <span class='hs-varid'>trivial</span><span class='hs-layout'>,</span> <span class='hs-conid'>Proof</span><span class='hs-layout'>)</span>
+<span class=hs-linenum> 20: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Language.Stitch.LH.Data.Nat</span>
+<span class=hs-linenum> 21: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Prelude</span> <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span><span class='hs-varid'>head</span><span class='hs-layout'>,</span> <span class='hs-varid'>length</span><span class='hs-layout'>,</span> <span class='hs-varid'>map</span><span class='hs-layout'>,</span> <span class='hs-varid'>tail</span><span class='hs-layout'>,</span> <span class='hs-varid'>take</span><span class='hs-layout'>)</span>
+<span class=hs-linenum> 22: </span>
+<span class=hs-linenum> 23: </span>
+<span class=hs-linenum> 24: </span><span class='hs-comment'>-- YYY: Using a custom List instead of [a] avoids LH error: unknown function/constant smt_set_sng</span>
+<span class=hs-linenum> 25: </span><span class='hs-keyword'>type</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyglyph'>[</span><span class='hs-varid'>a</span><span class='hs-keyglyph'>]</span>
+<span class=hs-linenum> 26: </span>
+<span class=hs-linenum> 27: </span><span class='hs-keyword'>{-@</span>
+<span class=hs-linenum> 28: </span><span class='hs-definition'>inline</span> <span class='hs-varid'>empty</span>
+<span class=hs-linenum> 29: </span><span class='hs-definition'>empty</span> <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>{ xs :</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>| length xs = 0 }</span>
+<span class=hs-linenum> 30: </span><span class='hs-keyword'>@-}</span>
+<span class=hs-linenum> 31: </span><span class='hs-definition'>empty</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum> 32: </span><a class=annot href="#"><span class=annottext>forall a .
+{VV : [a] | VV == GHC.Types.[]
+            &amp;&amp; Language.Stitch.LH.Data.List.length VV == 0}</span><span class='hs-definition'>empty</span></a> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>[]</span>
+<span class=hs-linenum> 33: </span>
+<span class=hs-linenum> 34: </span><span class='hs-keyword'>{-@</span>
+<span class=hs-linenum> 35: </span><span class='hs-definition'>inline</span> <span class='hs-varid'>cons</span>
+<span class=hs-linenum> 36: </span><span class='hs-definition'>cons</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>xs</span> <span class='hs-conop'>:</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>{ ys :</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>| length ys = 1 + length xs }</span>
+<span class=hs-linenum> 37: </span><span class='hs-keyword'>@-}</span>
+<span class=hs-linenum> 38: </span><span class='hs-definition'>cons</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum> 39: </span><a class=annot href="#"><span class=annottext>forall a .
+lq_tmp$x##453:a -&gt; lq_tmp$x##454:[a] -&gt; {VV : [a] | VV == GHC.Types.: lq_tmp$x##453 lq_tmp$x##454
+                                                    &amp;&amp; Language.Stitch.LH.Data.List.length VV == 1 + Language.Stitch.LH.Data.List.length lq_tmp$x##454}</span><span class='hs-definition'>cons</span></a> <a class=annot href="#"><span class=annottext>a</span><span class='hs-varid'>a</span></a> <a class=annot href="#"><span class=annottext>[a]</span><span class='hs-varid'>b</span></a> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##482 : a | lq_tmp$x##482 == a##a1J1}</span><span class='hs-varid'>a</span></a><span class='hs-conop'>:</span><a class=annot href="#"><span class=annottext>{lq_tmp$x##486 : [a] | lq_tmp$x##486 == b##a1J2
+                       &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##486 &gt;= 0
+                       &amp;&amp; len lq_tmp$x##486 &gt;= 0}</span><span class='hs-varid'>b</span></a>
+<span class=hs-linenum> 40: </span>
+<span class=hs-linenum> 41: </span><span class='hs-keyword'>{-@</span>
+<span class=hs-linenum> 42: </span><span class='hs-definition'>reflect</span> <span class='hs-varid'>elemAt</span>
+<span class=hs-linenum> 43: </span><span class='hs-definition'>elemAt</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>n</span> <span class='hs-conop'>:</span> <span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>{ xs :</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>| length xs &gt; n }</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum> 44: </span><span class='hs-keyword'>@-}</span>
+<span class=hs-linenum> 45: </span><span class='hs-definition'>elemAt</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum> 46: </span><a class=annot href="#"><span class=annottext>forall a .
+lq_tmp$x##491:{VV##0 : GHC.Types.Int | VV##0 &gt;= 0} -&gt; lq_tmp$x##492:{VV : [a] | Language.Stitch.LH.Data.List.length VV &gt; lq_tmp$x##491} -&gt; a</span><span class='hs-definition'>elemAt</span></a> <span class='hs-num'>0</span> <span class='hs-layout'>(</span><span class='hs-varid'>x</span><span class='hs-conop'>:</span><span class='hs-keyword'>_</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##808 : a | lq_tmp$x##808 == x##a1J3}</span><span class='hs-varid'>x</span></a>
+<span class=hs-linenum> 47: </span><span class='hs-definition'>elemAt</span> <span class='hs-varid'>i</span> <span class='hs-layout'>(</span><span class='hs-keyword'>_</span><span class='hs-conop'>:</span><span class='hs-varid'>xs</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>forall a .
+lq_tmp$x##491:{VV##0 : GHC.Types.Int | VV##0 &gt;= 0} -&gt; lq_tmp$x##492:{VV : [a] | Language.Stitch.LH.Data.List.length VV &gt; lq_tmp$x##491} -&gt; a</span><span class='hs-varid'>elemAt</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##745 : GHC.Types.Int | lq_tmp$x##745 == ds_d2KD - lq_anf$##7205759403792804225##d2Ln}</span><span class='hs-layout'>(</span></a><a class=annot href="#"><span class=annottext>{lq_tmp$x##748 : GHC.Types.Int | lq_tmp$x##748 == ds_d2KD
+                                 &amp;&amp; lq_tmp$x##748 &gt;= 0}</span><span class='hs-varid'>i</span></a><span class='hs-comment'>-</span><a class=annot href="#"><span class=annottext>{lq_tmp$x##729 : GHC.Types.Int | lq_tmp$x##729 == (lq_anf$##7205759403792804224##d2Lm : int)}</span><span class='hs-num'>1</span></a><span class='hs-layout'>)</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##770 : [a] | lq_tmp$x##770 == xs##a1J5
+                       &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##770 &gt;= 0
+                       &amp;&amp; len lq_tmp$x##770 &gt;= 0}</span><span class='hs-varid'>xs</span></a>
+<span class=hs-linenum> 48: </span>
+<span class=hs-linenum> 49: </span><span class='hs-keyword'>{-@</span>
+<span class=hs-linenum> 50: </span><span class='hs-definition'>reflect</span> <span class='hs-varid'>take</span>
+<span class=hs-linenum> 51: </span><span class='hs-definition'>take</span>
+<span class=hs-linenum> 52: </span>  <span class='hs-keyglyph'>::</span> <span class='hs-varid'>n</span> <span class='hs-conop'>:</span> <span class='hs-conid'>Nat</span>
+<span class=hs-linenum> 53: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>{ xs :</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>| length xs &gt;= n }</span>
+<span class=hs-linenum> 54: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>{ ys :</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>| length ys = n}</span>
+<span class=hs-linenum> 55: </span><span class='hs-keyword'>@-}</span>
+<span class=hs-linenum> 56: </span><span class='hs-definition'>take</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum> 57: </span><a class=annot href="#"><span class=annottext>forall a .
+lq_tmp$x##811:{VV##0 : GHC.Types.Int | VV##0 &gt;= 0} -&gt; lq_tmp$x##812:{VV : [a] | Language.Stitch.LH.Data.List.length VV &gt;= lq_tmp$x##811} -&gt; {VV : [a] | Language.Stitch.LH.Data.List.length VV == lq_tmp$x##811}</span><span class='hs-definition'>take</span></a> <span class='hs-num'>0</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{VV : forall a &lt;p :: a a -&gt; Bool&gt;.
+      {lq_tmp$x##999 : [a]&lt;\lq_tmp$x##1000 VV -&gt; {lq_tmp$x##998 : a&lt;p lq_tmp$x##1000&gt; | true}&gt; | is$GHC.Types.[] lq_tmp$x##999
+                                                                                                 &amp;&amp; not (is$GHC.Types.: lq_tmp$x##999)
+                                                                                                 &amp;&amp; lq_tmp$x##999 == GHC.Types.[]
+                                                                                                 &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##999 == 0
+                                                                                                 &amp;&amp; len lq_tmp$x##999 == 0} | VV == GHC.Types.[]}</span><span class='hs-conid'>[]</span></a>
+<span class=hs-linenum> 58: </span><span class='hs-definition'>take</span> <span class='hs-varid'>i</span> <span class='hs-layout'>(</span><span class='hs-varid'>x</span><span class='hs-conop'>:</span><span class='hs-varid'>xs</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##988 : a | lq_tmp$x##988 == x##a1J7}</span><span class='hs-varid'>x</span></a><span class='hs-conop'>:</span><a class=annot href="#"><span class=annottext>{lq_tmp$x##947 : [{lq_tmp$x##957 : a | $k_##956[VV##955:=lq_tmp$x##957][lq_tmp$x##951:=lq_anf$##7205759403792804233##d2Lv][lq_tmp$x##952:=xs##a1J8]}] | lq_tmp$x##947 == Language.Stitch.LH.Data.List.take lq_anf$##7205759403792804233##d2Lv xs##a1J8
+                                                                                                                                                        &amp;&amp; lq_tmp$x##947 == (if 0 == lq_anf$##7205759403792804233##d2Lv then GHC.Types.[] else GHC.Types.: (lqdc##$select##GHC.Types.:##1 xs##a1J8) (Language.Stitch.LH.Data.List.take (lq_anf$##7205759403792804233##d2Lv - 1) (lqdc##$select##GHC.Types.:##2 xs##a1J8)))
+                                                                                                                                                        &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##947 == lq_anf$##7205759403792804233##d2Lv}</span><span class='hs-layout'>(</span></a><span class='hs-varid'>take</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##933 : GHC.Types.Int | lq_tmp$x##933 == ds_d2Ki - lq_anf$##7205759403792804232##d2Lu}</span><span class='hs-layout'>(</span></a><a class=annot href="#"><span class=annottext>{lq_tmp$x##936 : GHC.Types.Int | lq_tmp$x##936 == ds_d2Ki
+                                 &amp;&amp; lq_tmp$x##936 &gt;= 0}</span><span class='hs-varid'>i</span></a><span class='hs-comment'>-</span><a class=annot href="#"><span class=annottext>{lq_tmp$x##917 : GHC.Types.Int | lq_tmp$x##917 == (lq_anf$##7205759403792804231##d2Lt : int)}</span><span class='hs-num'>1</span></a><span class='hs-layout'>)</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##962 : [a] | lq_tmp$x##962 == xs##a1J8
+                       &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##962 &gt;= 0
+                       &amp;&amp; len lq_tmp$x##962 &gt;= 0}</span><span class='hs-varid'>xs</span></a><span class='hs-layout'>)</span>
+<span class=hs-linenum> 59: </span>
+<span class=hs-linenum> 60: </span><span class='hs-keyword'>{-@</span>
+<span class=hs-linenum> 61: </span><span class='hs-definition'>measure</span> <span class='hs-varid'>length</span>
+<span class=hs-linenum> 62: </span><span class='hs-definition'>length</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>xs</span> <span class='hs-conop'>:</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Nat</span>
+<span class=hs-linenum> 63: </span><span class='hs-keyword'>@-}</span>
+<span class=hs-linenum> 64: </span><span class='hs-definition'>length</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Nat</span>
+<span class=hs-linenum> 65: </span><a class=annot href="#"><span class=annottext>forall a .
+lq_tmp$x##1010:[a] -&gt; {VV : GHC.Types.Int | VV == Language.Stitch.LH.Data.List.length lq_tmp$x##1010
+                                            &amp;&amp; VV &gt;= 0}</span><span class='hs-definition'>length</span></a> <span class='hs-conid'>[]</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1036 : GHC.Prim.Int# | lq_tmp$x##1036 == 0}</span><span class='hs-num'>0</span></a>
+<span class=hs-linenum> 66: </span><span class='hs-definition'>length</span> <span class='hs-layout'>(</span><span class='hs-keyword'>_</span><span class='hs-conop'>:</span><span class='hs-varid'>xs</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1082 : GHC.Types.Int | lq_tmp$x##1082 == (lq_anf$##7205759403792804237##d2Lz : int)}</span><span class='hs-num'>1</span></a> <span class='hs-varop'>+</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1091 : GHC.Types.Int | lq_tmp$x##1091 == Language.Stitch.LH.Data.List.length xs##a1J9
+                                  &amp;&amp; lq_tmp$x##1091 &gt;= 0}</span><span class='hs-varid'>length</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1102 : [a] | lq_tmp$x##1102 == xs##a1J9
+                        &amp;&amp; len lq_tmp$x##1102 &gt;= 0}</span><span class='hs-varid'>xs</span></a>
+<span class=hs-linenum> 67: </span>
+<span class=hs-linenum> 68: </span><span class='hs-keyword'>{-@</span>
+<span class=hs-linenum> 69: </span><span class='hs-definition'>reflect</span> <span class='hs-varid'>append</span>
+<span class=hs-linenum> 70: </span><span class='hs-definition'>append</span> <span class='hs-keyglyph'>::</span>
+<span class=hs-linenum> 71: </span>  <span class='hs-varid'>xs</span> <span class='hs-conop'>:</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span>
+<span class=hs-linenum> 72: </span>  <span class='hs-varid'>ys</span> <span class='hs-conop'>:</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span>
+<span class=hs-linenum> 73: </span>  <span class='hs-keyword'>{ zs :</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>| length zs == length xs + length ys }</span>
+<span class=hs-linenum> 74: </span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum> 75: </span><span class='hs-definition'>append</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum> 76: </span><a class=annot href="#"><span class=annottext>forall a .
+lq_tmp$x##1123:[a] -&gt; lq_tmp$x##1124:[a] -&gt; {VV : [a] | Language.Stitch.LH.Data.List.length VV == Language.Stitch.LH.Data.List.length lq_tmp$x##1123 + Language.Stitch.LH.Data.List.length lq_tmp$x##1124}</span><span class='hs-definition'>append</span></a> <span class='hs-conid'>[]</span> <a class=annot href="#"><span class=annottext>[a]</span><span class='hs-varid'>ys</span></a> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1156 : [a] | lq_tmp$x##1156 == ys##a1Ja
+                        &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1156 &gt;= 0
+                        &amp;&amp; len lq_tmp$x##1156 &gt;= 0}</span><span class='hs-varid'>ys</span></a>
+<span class=hs-linenum> 77: </span><span class='hs-definition'>append</span> <span class='hs-layout'>(</span><span class='hs-varid'>x</span><span class='hs-conop'>:</span><span class='hs-varid'>xs</span><span class='hs-layout'>)</span> <span class='hs-varid'>ys</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1252 : a | lq_tmp$x##1252 == x##a1Jb}</span><span class='hs-varid'>x</span></a><span class='hs-conop'>:</span><a class=annot href="#"><span class=annottext>{lq_tmp$x##1205 : [{lq_tmp$x##1217 : a | $k_##1216[VV##1215:=lq_tmp$x##1217][lq_tmp$x##1210:=xs##a1Jc][lq_tmp$x##1211:=ys##a1Ja]}] | lq_tmp$x##1205 == Language.Stitch.LH.Data.List.append xs##a1Jc ys##a1Ja
+                                                                                                                                     &amp;&amp; lq_tmp$x##1205 == (if is$GHC.Types.[] xs##a1Jc then ys##a1Ja else GHC.Types.: (lqdc##$select##GHC.Types.:##1 xs##a1Jc) (Language.Stitch.LH.Data.List.append (lqdc##$select##GHC.Types.:##2 xs##a1Jc) ys##a1Ja))
+                                                                                                                                     &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1205 == Language.Stitch.LH.Data.List.length xs##a1Jc + Language.Stitch.LH.Data.List.length ys##a1Ja}</span><span class='hs-layout'>(</span></a><span class='hs-varid'>append</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1221 : [a] | lq_tmp$x##1221 == xs##a1Jc
+                        &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1221 &gt;= 0
+                        &amp;&amp; len lq_tmp$x##1221 &gt;= 0}</span><span class='hs-varid'>xs</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1226 : [a] | lq_tmp$x##1226 == ys##a1Ja
+                        &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1226 &gt;= 0
+                        &amp;&amp; len lq_tmp$x##1226 &gt;= 0}</span><span class='hs-varid'>ys</span></a><span class='hs-layout'>)</span>
+<span class=hs-linenum> 78: </span>
+<span class=hs-linenum> 79: </span><span class='hs-keyword'>{-@</span>
+<span class=hs-linenum> 80: </span><span class='hs-definition'>appendLength</span>
+<span class=hs-linenum> 81: </span>  <span class='hs-keyglyph'>::</span> <span class='hs-varid'>xs</span> <span class='hs-conop'>:</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum> 82: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>ys</span> <span class='hs-conop'>:</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum> 83: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>{ length (append xs ys) == length xs + length ys}</span>
+<span class=hs-linenum> 84: </span><span class='hs-keyword'>@-}</span>
+<span class=hs-linenum> 85: </span><span class='hs-definition'>appendLength</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Proof</span>
+<span class=hs-linenum> 86: </span><a class=annot href="#"><span class=annottext>forall a .
+lq_tmp$x##1261:[a] -&gt; lq_tmp$x##1262:[a] -&gt; {VV : () | Language.Stitch.LH.Data.List.length (Language.Stitch.LH.Data.List.append lq_tmp$x##1261 lq_tmp$x##1262) == Language.Stitch.LH.Data.List.length lq_tmp$x##1261 + Language.Stitch.LH.Data.List.length lq_tmp$x##1262}</span><span class='hs-definition'>appendLength</span></a> <a class=annot href="#"><span class=annottext>[a]</span><span class='hs-varid'>xs</span></a> <a class=annot href="#"><span class=annottext>[a]</span><span class='hs-varid'>ys</span></a> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1332 : () | lq_tmp$x##1332 == Language.Haskell.Liquid.ProofCombinators.trivial}</span><span class='hs-varid'>trivial</span></a> <span class='hs-varop'>?</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1278 : [{lq_tmp$x##1290 : a | $k_##1289[VV##1288:=lq_tmp$x##1290][lq_tmp$x##1283:=xs##a1Je][lq_tmp$x##1284:=ys##a1Jf]}] | lq_tmp$x##1278 == Language.Stitch.LH.Data.List.append xs##a1Je ys##a1Jf
+                                                                                                                                     &amp;&amp; lq_tmp$x##1278 == (if is$GHC.Types.[] xs##a1Je then ys##a1Jf else GHC.Types.: (lqdc##$select##GHC.Types.:##1 xs##a1Je) (Language.Stitch.LH.Data.List.append (lqdc##$select##GHC.Types.:##2 xs##a1Je) ys##a1Jf))
+                                                                                                                                     &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1278 == Language.Stitch.LH.Data.List.length xs##a1Je + Language.Stitch.LH.Data.List.length ys##a1Jf}</span><span class='hs-varid'>append</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1294 : [a] | lq_tmp$x##1294 == xs##a1Je
+                        &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1294 &gt;= 0
+                        &amp;&amp; len lq_tmp$x##1294 &gt;= 0}</span><span class='hs-varid'>xs</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1299 : [a] | lq_tmp$x##1299 == ys##a1Jf
+                        &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1299 &gt;= 0
+                        &amp;&amp; len lq_tmp$x##1299 &gt;= 0}</span><span class='hs-varid'>ys</span></a>
+<span class=hs-linenum> 87: </span>
+<span class=hs-linenum> 88: </span><span class='hs-keyword'>{-@</span>
+<span class=hs-linenum> 89: </span><span class='hs-definition'>elemAtThroughAppend</span>
+<span class=hs-linenum> 90: </span>  <span class='hs-keyglyph'>::</span> <span class='hs-varid'>i</span> <span class='hs-conop'>:</span> <span class='hs-conid'>Nat</span>
+<span class=hs-linenum> 91: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>xs</span> <span class='hs-conop'>:</span> <span class='hs-keyword'>{ xs :</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyword'>| i &lt; length xs }</span>
+<span class=hs-linenum> 92: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>ys</span> <span class='hs-conop'>:</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum> 93: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>{ elemAt i (append xs ys) = elemAt i xs }</span>
+<span class=hs-linenum> 94: </span><span class='hs-keyword'>@-}</span>
+<span class=hs-linenum> 95: </span><span class='hs-definition'>elemAtThroughAppend</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>List</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Proof</span>
+<span class=hs-linenum> 96: </span><a class=annot href="#"><span class=annottext>forall a .
+lq_tmp$x##1342:{VV##0 : GHC.Types.Int | VV##0 &gt;= 0} -&gt; lq_tmp$x##1343:{VV : [a] | lq_tmp$x##1342 &lt; Language.Stitch.LH.Data.List.length VV} -&gt; lq_tmp$x##1344:[a] -&gt; {VV : () | Language.Stitch.LH.Data.List.elemAt lq_tmp$x##1342 (Language.Stitch.LH.Data.List.append lq_tmp$x##1343 lq_tmp$x##1344) == Language.Stitch.LH.Data.List.elemAt lq_tmp$x##1342 lq_tmp$x##1343}</span><span class='hs-definition'>elemAtThroughAppend</span></a> <a class=annot href="#"><span class=annottext>{VV##0 : GHC.Types.Int | VV##0 &gt;= 0}</span><span class='hs-varid'>i</span></a> <a class=annot href="#"><span class=annottext>{VV : [a] | i##a1Jg &lt; Language.Stitch.LH.Data.List.length VV}</span><span class='hs-varid'>xs</span></a> <a class=annot href="#"><span class=annottext>[a]</span><span class='hs-varid'>ys</span></a> <span class='hs-keyglyph'>=</span>
+<span class=hs-linenum> 97: </span>  <span class='hs-keyword'>if</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1375 : GHC.Types.Int | lq_tmp$x##1375 == i##a1Jg
+                                  &amp;&amp; lq_tmp$x##1375 &gt;= 0}</span><span class='hs-varid'>i</span></a> <span class='hs-varop'>==</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1354 : GHC.Types.Int | lq_tmp$x##1354 == (lq_anf$##7205759403792804243##d2LF : int)}</span><span class='hs-num'>0</span></a> <span class='hs-keyword'>then</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1605 : () | lq_tmp$x##1605 == Language.Haskell.Liquid.ProofCombinators.trivial}</span><span class='hs-varid'>trivial</span></a> <span class='hs-varop'>?</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1565 : () | Language.Stitch.LH.Data.List.length (Language.Stitch.LH.Data.List.append xs##a1Jh ys##a1Ji) == Language.Stitch.LH.Data.List.length xs##a1Jh + Language.Stitch.LH.Data.List.length ys##a1Ji}</span><span class='hs-varid'>appendLength</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1580 : [a] | lq_tmp$x##1580 == xs##a1Jh
+                        &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1580 &gt;= 0
+                        &amp;&amp; len lq_tmp$x##1580 &gt;= 0
+                        &amp;&amp; i##a1Jg &lt; Language.Stitch.LH.Data.List.length lq_tmp$x##1580}</span><span class='hs-varid'>xs</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1585 : [a] | lq_tmp$x##1585 == ys##a1Ji
+                        &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1585 &gt;= 0
+                        &amp;&amp; len lq_tmp$x##1585 &gt;= 0}</span><span class='hs-varid'>ys</span></a>
+<span class=hs-linenum> 98: </span>  <span class='hs-keyword'>else</span> <span class='hs-keyword'>case</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1388 : [a] | lq_tmp$x##1388 == xs##a1Jh
+                        &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1388 &gt;= 0
+                        &amp;&amp; len lq_tmp$x##1388 &gt;= 0
+                        &amp;&amp; i##a1Jg &lt; Language.Stitch.LH.Data.List.length lq_tmp$x##1388}</span><span class='hs-varid'>xs</span></a> <span class='hs-keyword'>of</span>
+<span class=hs-linenum> 99: </span>    <span class='hs-layout'>(</span><span class='hs-keyword'>_</span><span class='hs-conop'>:</span><span class='hs-varid'>xss</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>-&gt;</span> <a class=annot href="#"><span class=annottext>forall a .
+lq_tmp$x##1342:{VV##0 : GHC.Types.Int | VV##0 &gt;= 0} -&gt; lq_tmp$x##1343:{VV : [a] | lq_tmp$x##1342 &lt; Language.Stitch.LH.Data.List.length VV} -&gt; lq_tmp$x##1344:[a] -&gt; {VV : () | Language.Stitch.LH.Data.List.elemAt lq_tmp$x##1342 (Language.Stitch.LH.Data.List.append lq_tmp$x##1343 lq_tmp$x##1344) == Language.Stitch.LH.Data.List.elemAt lq_tmp$x##1342 lq_tmp$x##1343}</span><span class='hs-varid'>elemAtThroughAppend</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1512 : GHC.Types.Int | lq_tmp$x##1512 == i##a1Jg - lq_anf$##7205759403792804250##d2LM}</span><span class='hs-layout'>(</span></a><a class=annot href="#"><span class=annottext>{lq_tmp$x##1515 : GHC.Types.Int | lq_tmp$x##1515 == i##a1Jg
+                                  &amp;&amp; lq_tmp$x##1515 &gt;= 0}</span><span class='hs-varid'>i</span></a> <span class='hs-comment'>-</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1496 : GHC.Types.Int | lq_tmp$x##1496 == (lq_anf$##7205759403792804249##d2LL : int)}</span><span class='hs-num'>1</span></a><span class='hs-layout'>)</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1545 : [a] | lq_tmp$x##1545 == xss##a1Jj
+                        &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1545 &gt;= 0
+                        &amp;&amp; len lq_tmp$x##1545 &gt;= 0}</span><span class='hs-varid'>xss</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1550 : [a] | lq_tmp$x##1550 == ys##a1Ji
+                        &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1550 &gt;= 0
+                        &amp;&amp; len lq_tmp$x##1550 &gt;= 0}</span><span class='hs-varid'>ys</span></a>
+<span class=hs-linenum>100: </span>    <span class='hs-conid'>[]</span> <span class='hs-keyglyph'>-&gt;</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1455 : () | lq_tmp$x##1455 == Language.Haskell.Liquid.ProofCombinators.trivial}</span><span class='hs-varid'>trivial</span></a> <span class='hs-varop'>?</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1415 : () | Language.Stitch.LH.Data.List.length (Language.Stitch.LH.Data.List.append xs##a1Jh ys##a1Ji) == Language.Stitch.LH.Data.List.length xs##a1Jh + Language.Stitch.LH.Data.List.length ys##a1Ji}</span><span class='hs-varid'>appendLength</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1430 : [a] | lq_tmp$x##1430 == xs##a1Jh
+                        &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1430 &gt;= 0
+                        &amp;&amp; len lq_tmp$x##1430 &gt;= 0
+                        &amp;&amp; i##a1Jg &lt; Language.Stitch.LH.Data.List.length lq_tmp$x##1430}</span><span class='hs-varid'>xs</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1435 : [a] | lq_tmp$x##1435 == ys##a1Ji
+                        &amp;&amp; Language.Stitch.LH.Data.List.length lq_tmp$x##1435 &gt;= 0
+                        &amp;&amp; len lq_tmp$x##1435 &gt;= 0}</span><span class='hs-varid'>ys</span></a>
+</pre>
+</body>
+</html>

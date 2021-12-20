@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<title>src/Language/Stitch/LH/Statement.hs</title>
+</head>
+<head>
+<link type='text/css' rel='stylesheet' href='liquid.css' />
+</head>
+
+<body>
+<hr>
+Put mouse over identifiers to see inferred types
+<pre><span class=hs-linenum> 1: </span><a class=annot href="#"><span class=annottext>{VV##1497 : GHC.Types.Module | $k_##1498}</span><span class='hs-comment'>{-# OPTIONS_GHC -fplugin=LiquidHaskell #-}</span></a>
+<span class=hs-linenum> 2: </span>
+<span class=hs-linenum> 3: </span><span class='hs-comment'>-----------------------------------------------------------------------------</span>
+<span class=hs-linenum> 4: </span><span class='hs-comment'>-- |</span>
+<span class=hs-linenum> 5: </span><span class='hs-comment'>-- Module      :  Language.Stitch.LH.Statement</span>
+<span class=hs-linenum> 6: </span><span class='hs-comment'>-- Copyright   :  (C) 2015 Richard Eisenberg</span>
+<span class=hs-linenum> 7: </span><span class='hs-comment'>-- License     :  BSD-style (see LICENSE)</span>
+<span class=hs-linenum> 8: </span><span class='hs-comment'>-- Maintainer  :  Richard Eisenberg (rae@richarde.dev)</span>
+<span class=hs-linenum> 9: </span><span class='hs-comment'>-- Stability   :  experimental</span>
+<span class=hs-linenum>10: </span><span class='hs-comment'>--</span>
+<span class=hs-linenum>11: </span><span class='hs-comment'>-- Defines the Stitch Statement type, which can either be a bare</span>
+<span class=hs-linenum>12: </span><span class='hs-comment'>-- expression or a global variable assignment.</span>
+<span class=hs-linenum>13: </span><span class='hs-comment'>--</span>
+<span class=hs-linenum>14: </span><span class='hs-comment'>----------------------------------------------------------------------------</span>
+<span class=hs-linenum>15: </span>
+<span class=hs-linenum>16: </span><span class='hs-keyword'>module</span> <span class='hs-conid'>Language.Stitch.LH.Statement</span> <span class='hs-layout'>(</span> <span class='hs-conid'>Statement</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>)</span> <span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
+<span class=hs-linenum>17: </span>
+<span class=hs-linenum>18: </span><span class='hs-comment'>-- XXX: Import Op so LH doesn't fail with: Unknown type constructor `ArithOp`</span>
+<span class=hs-linenum>19: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Language.Stitch.LH.Op</span>
+<span class=hs-linenum>20: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Language.Stitch.LH.Unchecked</span>
+<span class=hs-linenum>21: </span>
+<span class=hs-linenum>22: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Text.PrettyPrint.ANSI.Leijen</span>
+<span class=hs-linenum>23: </span>
+<span class=hs-linenum>24: </span><span class='hs-comment'>-- | A statement can either be a bare expression, which will be evaluated,</span>
+<span class=hs-linenum>25: </span><span class='hs-comment'>-- or an assignment to a global variable.</span>
+<span class=hs-linenum>26: </span><span class='hs-keyword'>{-@</span>
+<span class=hs-linenum>27: </span><span class='hs-keyword'>data</span> <span class='hs-conid'>Statement</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>BareExp</span> <span class='hs-conid'>ClosedUExp</span>
+<span class=hs-linenum>28: </span>               <span class='hs-keyglyph'>|</span> <span class='hs-conid'>NewGlobal</span> <span class='hs-conid'>String</span> <span class='hs-conid'>ClosedUExp</span>
+<span class=hs-linenum>29: </span><span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>30: </span><span class='hs-keyword'>data</span> <span class='hs-conid'>Statement</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>BareExp</span> <span class='hs-conid'>UExp</span>
+<span class=hs-linenum>31: </span>               <span class='hs-keyglyph'>|</span> <span class='hs-conid'>NewGlobal</span> <span class='hs-conid'>String</span> <span class='hs-conid'>UExp</span>
+<span class=hs-linenum>32: </span>  <span class='hs-keyword'>deriving</span> <span class='hs-conid'>Show</span>
+<span class=hs-linenum>33: </span>
+<span class=hs-linenum>34: </span><span class='hs-keyword'>instance</span> <a class=annot href="#"><span class=annottext>(Text.PrettyPrint.ANSI.Leijen.Internal.Pretty Language.Stitch.LH.Statement.Statement)</span><span class='hs-conid'>Pretty</span></a> <span class='hs-conid'>Statement</span> <span class='hs-keyword'>where</span>
+<span class=hs-linenum>35: </span>  <a class=annot href="#"><span class=annottext>ds_dh6G:{VV##1271 : Language.Stitch.LH.Statement.Statement | $k_##1272} -&gt; {VV##1274 : Text.PrettyPrint.ANSI.Leijen.Internal.Doc | $k_##1275}</span><span class='hs-varid'>pretty</span></a> <span class='hs-layout'>(</span><span class='hs-conid'>BareExp</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span>     <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1317 : (Text.PrettyPrint.ANSI.Leijen.Internal.Pretty Language.Stitch.LH.Unchecked.ScopedUExp) | lq_tmp$x##1317 == Language.Stitch.LH.Unchecked.$fPrettyScopedUExp}</span><span class='hs-varid'>pretty</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1299 : Language.Stitch.LH.Unchecked.ScopedUExp | Language.Stitch.LH.Unchecked.n lq_tmp$x##1299 == lq_anf$##7205759403792859375##dh6T
+                                                            &amp;&amp; lqdc##$select##Language.Stitch.LH.Unchecked.ScopedUExp##1 lq_tmp$x##1299 == e##ah50}</span><span class='hs-layout'>(</span></a><span class='hs-conid'>ScopedUExp</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1292 : GHC.Types.Int | lq_tmp$x##1292 == (lq_anf$##7205759403792859374##dh6S : int)}</span><span class='hs-num'>0</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1305 : Language.Stitch.LH.Unchecked.UExp | lq_tmp$x##1305 == e##ah50
+                                                      &amp;&amp; Language.Stitch.LH.Unchecked.numFreeVars lq_tmp$x##1305 == 0
+                                                      &amp;&amp; Language.Stitch.LH.Unchecked.numFreeVars lq_tmp$x##1305 &gt;= 0}</span><span class='hs-varid'>e</span></a><span class='hs-layout'>)</span>
+<span class=hs-linenum>36: </span>  <span class='hs-varid'>pretty</span> <span class='hs-layout'>(</span><span class='hs-conid'>NewGlobal</span> <span class='hs-varid'>v</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>text</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1356 : [GHC.Types.Char] | lq_tmp$x##1356 == v##ah51
+                                     &amp;&amp; len lq_tmp$x##1356 &gt;= 0}</span><span class='hs-varid'>v</span></a> <span class='hs-varop'>&lt;+&gt;</span> <a class=annot href="#"><span class=annottext>Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>char</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1360 : GHC.Types.Char | lq_tmp$x##1360 == ((lit "61" Char) : Char)}</span><span class='hs-chr'>'='</span></a> <span class='hs-varop'>&lt;+&gt;</span> <a class=annot href="#"><span class=annottext>Text.PrettyPrint.ANSI.Leijen.Internal.Doc</span><span class='hs-varid'>pretty</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1381 : Language.Stitch.LH.Unchecked.ScopedUExp | Language.Stitch.LH.Unchecked.n lq_tmp$x##1381 == lq_anf$##7205759403792859381##dh6Z
+                                                            &amp;&amp; lqdc##$select##Language.Stitch.LH.Unchecked.ScopedUExp##1 lq_tmp$x##1381 == e##ah52}</span><span class='hs-layout'>(</span></a><span class='hs-conid'>ScopedUExp</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1374 : GHC.Types.Int | lq_tmp$x##1374 == (lq_anf$##7205759403792859380##dh6Y : int)}</span><span class='hs-num'>0</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##1387 : Language.Stitch.LH.Unchecked.UExp | lq_tmp$x##1387 == e##ah52
+                                                      &amp;&amp; Language.Stitch.LH.Unchecked.numFreeVars lq_tmp$x##1387 == 0
+                                                      &amp;&amp; Language.Stitch.LH.Unchecked.numFreeVars lq_tmp$x##1387 &gt;= 0}</span><span class='hs-varid'>e</span></a><span class='hs-layout'>)</span>
+</pre>
+</body>
+</html>

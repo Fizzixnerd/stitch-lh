@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<title>src/Language/Stitch/LH/Data/Nat.hs</title>
+</head>
+<head>
+<link type='text/css' rel='stylesheet' href='liquid.css' />
+</head>
+
+<body>
+<hr>
+Put mouse over identifiers to see inferred types
+<pre><span class=hs-linenum> 1: </span><a class=annot href="#"><span class=annottext>{VV##426 : GHC.Types.Module | $k_##427}</span><span class='hs-comment'>{-# OPTIONS_GHC -fplugin=LiquidHaskell #-}</span></a>
+<span class=hs-linenum> 2: </span>
+<span class=hs-linenum> 3: </span><span class='hs-keyword'>module</span> <span class='hs-conid'>Language.Stitch.LH.Data.Nat</span> <span class='hs-keyword'>where</span>
+<span class=hs-linenum> 4: </span>
+<span class=hs-linenum> 5: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Prelude</span> <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span><span class='hs-varid'>max</span><span class='hs-layout'>)</span>
+<span class=hs-linenum> 6: </span>
+<span class=hs-linenum> 7: </span><span class='hs-keyword'>{-@</span> <span class='hs-keyword'>type</span> <span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>{</span> <span class='hs-varid'>v</span> <span class='hs-conop'>:</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>|</span> <span class='hs-varid'>v</span> <span class='hs-varop'>&gt;=</span> <span class='hs-num'>0</span> <span class='hs-layout'>}</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum> 8: </span><span class='hs-keyword'>type</span> <span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Int</span>
+<span class=hs-linenum> 9: </span>
+<span class=hs-linenum>10: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>inline</span> <span class='hs-varid'>max</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>11: </span><span class='hs-definition'>max</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Ord</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum>12: </span><a class=annot href="#"><span class=annottext>forall a .
+(GHC.Classes.Ord&lt;[]&gt; a) =&gt;
+lq_tmp$x##384:a -&gt; lq_tmp$x##385:a -&gt; {VV : a | VV == (if lq_tmp$x##384 &gt; lq_tmp$x##385 then lq_tmp$x##384 else lq_tmp$x##385)}</span><span class='hs-definition'>max</span></a> <a class=annot href="#"><span class=annottext>a</span><span class='hs-varid'>a</span></a> <a class=annot href="#"><span class=annottext>a</span><span class='hs-varid'>b</span></a> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>if</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##405 : a | lq_tmp$x##405 == a##a3JI}</span><span class='hs-varid'>a</span></a> <span class='hs-varop'>&gt;</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##406 : a | lq_tmp$x##406 == b##a3JJ}</span><span class='hs-varid'>b</span></a> <span class='hs-keyword'>then</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##421 : a | lq_tmp$x##421 == a##a3JI}</span><span class='hs-varid'>a</span></a> <span class='hs-keyword'>else</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##415 : a | lq_tmp$x##415 == b##a3JJ}</span><span class='hs-varid'>b</span></a>
+<span class=hs-linenum>13: </span>
+<span class=hs-linenum>14: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>inline</span> <span class='hs-varid'>minus</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>15: </span><span class='hs-definition'>minus</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Nat</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Nat</span>
+<span class=hs-linenum>16: </span><a class=annot href="#"><span class=annottext>lq_tmp$x##454:GHC.Types.Int -&gt; lq_tmp$x##455:GHC.Types.Int -&gt; {VV : GHC.Types.Int | VV == (if 0 &gt; lq_tmp$x##454 - lq_tmp$x##455 then 0 else lq_tmp$x##454 - lq_tmp$x##455)}</span><span class='hs-definition'>minus</span></a> <a class=annot href="#"><span class=annottext>GHC.Types.Int</span><span class='hs-varid'>a</span></a> <a class=annot href="#"><span class=annottext>GHC.Types.Int</span><span class='hs-varid'>b</span></a> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>max</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##461 : GHC.Types.Int | lq_tmp$x##461 == (lq_anf$##7205759403792808026##d3KG : int)}</span><span class='hs-num'>0</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##477 : GHC.Types.Int | lq_tmp$x##477 == a##a3JK - b##a3JL}</span><span class='hs-layout'>(</span></a><a class=annot href="#"><span class=annottext>{lq_tmp$x##480 : GHC.Types.Int | lq_tmp$x##480 == a##a3JK}</span><span class='hs-varid'>a</span></a> <span class='hs-comment'>-</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##481 : GHC.Types.Int | lq_tmp$x##481 == b##a3JL}</span><span class='hs-varid'>b</span></a><span class='hs-layout'>)</span>
+</pre>
+</body>
+</html>
