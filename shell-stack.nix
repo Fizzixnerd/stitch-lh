@@ -1,11 +1,10 @@
-{ pkgs ?  import <nixpkgs> {}
+{ pkgs ? import ./nixpkgs.nix {}
+, ghc ? pkgs.haskell.compiler.ghc8102
 }:
 
-with pkgs;
-
-haskell.lib.buildStackProject ({
+pkgs.haskell.lib.buildStackProject ({
   name = "stitch-lh";
-  buildInputs = [ git z3 ];
-  ghc = haskell.compiler.ghc8107;
+  buildInputs = with pkgs; [ git z3 ];
+  ghc = ghc;
   LANG = "en_US.utf8";
 })

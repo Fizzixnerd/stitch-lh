@@ -33,21 +33,21 @@ import Language.Stitch.LH.Unchecked
 import Text.PrettyPrint.ANSI.Leijen
 
 
+{-@ predicate WellTyped E CTX = checkBindings CTX E && numFreeVarsExp E <= List.length CTX @-}
+{-@ type WellTypedExp CTX = { e : Exp | WellTyped e CTX } @-}
+{-@ type FunExp = { e : Exp | isFunTy (exprType e) } @-}
+{-@ type ExpT T = { e : Exp | T = exprType e } @-}
 {-@
-predicate WellTyped E CTX = checkBindings CTX E && numFreeVarsExp E <= List.length CTX
-type WellTypedExp CTX = { e : Exp | WellTyped e CTX }
-type FunExp = { e : Exp | isFunTy (exprType e) }
-type ExpT T = { e : Exp | T = exprType e }
-data Exp
-  = Var Ty Nat
-  | Lam Ty Exp
-  | App (e1 :: FunExp) (ExpT (funArgTy (exprType e1)))
-  | Let Exp Exp
-  | Arith (ExpT TInt) ArithOp (ExpT TInt)
-  | Cond (ExpT TBool) (a :: Exp) (ExpT (exprType a))
-  | Fix ({ e:FunExp | funArgTy (exprType e) = funResTy (exprType e) })
-  | IntE Int
-  | BoolE Bool
+data Exp where
+    Var :: Ty -> Nat -> Exp
+  | Lam :: Ty -> Exp -> Exp
+  | App :: e:FunExp -> (ExpT (funArgTy (exprType e))) -> Exp
+  | Let :: Exp -> Exp -> Exp
+  | Arith :: (ExpT TInt) -> ArithOp -> (ExpT TInt) -> Exp
+  | Cond :: (ExpT TBool) -> a:Exp -> (ExpT (exprType a)) -> Exp
+  | Fix :: ({ e : FunExp | funArgTy (exprType e) = funResTy (exprType e) }) -> Exp
+  | IntE :: Int -> Exp
+  | BoolE :: Bool -> Exp
 @-}
 
 -- | Checked expression
@@ -97,8 +97,8 @@ exprType (IntE _) = TInt
 exprType (BoolE _) = TBool
 
 -- | Check that all occurrences of a variable have the given type
+{-@ reflect checkBindings @-}
 {-@
-reflect checkBindings
 checkBindings
   :: ctx : List Ty
   -> { e : Exp | numFreeVarsExp e <= List.length ctx }
@@ -115,8 +115,8 @@ checkBindings ctx (Fix e) = checkBindings ctx e
 checkBindings _ (IntE _) = True
 checkBindings _ (BoolE _) = True
 
+{-@ rewriteWith aClosedExpIsValidInAnyContext [List.appendLength] @-}
 {-@
-rewriteWith aClosedExpIsValidInAnyContext [List.appendLength]
 aClosedExpIsValidInAnyContext
   :: ctx0 : List Ty
   -> ctx1 : List Ty
@@ -147,8 +147,8 @@ aClosedExpIsValidInAnyContext ctx0 ctx1 e = case e of
   IntE _ -> trivial
   BoolE _ -> trivial
 
+{-@ measure numFreeVarsExp @-}
 {-@
-measure numFreeVarsExp
 numFreeVarsExp :: Exp -> Nat
 @-}
 numFreeVarsExp :: Exp -> Nat

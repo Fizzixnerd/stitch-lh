@@ -13,6 +13,6 @@
 67:27-67:28::m :: "{v : (Data.Map.Internal.Map a {VV : b | papp1 p VV}) | v == m}"
 77:1-77:6::Language.Stitch.LH.Data.Map.empty :: "forall a b <p :: b -> Bool>.\n(Data.Map.Internal.Map a {VV : b<p> | true})"
 77:17-77:19::GHC.Tuple.() :: "{v : () | v == ()}"
-85:1-85:8::Language.Stitch.LH.Data.Map.goEmpty :: "forall a b .\nx1:() -> {VV : (Data.Map.Internal.Map a b) | VV == goEmpty ()\n                                             && VV == goEmpty x1}"
-85:14-85:24::Language.Stitch.LH.Data.Map.goEmpty :: "forall a b .\nx1:() -> {VV : (Data.Map.Internal.Map a b) | VV == goEmpty ()\n                                             && VV == goEmpty x1}"
+85:1-85:8::Language.Stitch.LH.Data.Map.goEmpty :: "forall a b .\nx1:() -> {VV : (Data.Map.Internal.Map a b) | VV == goEmpty x1\n                                             && VV == goEmpty ()}"
+85:14-85:24::Language.Stitch.LH.Data.Map.goEmpty :: "forall a b .\nx1:() -> {VV : (Data.Map.Internal.Map a b) | VV == goEmpty x1\n                                             && VV == goEmpty ()}"
 85:22-85:24::GHC.Tuple.() :: "{v : () | v == ()}"

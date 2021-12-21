@@ -24,30 +24,30 @@ import Prelude hiding (head, length, map, tail, take)
 -- YYY: Using a custom List instead of [a] avoids LH error: unknown function/constant smt_set_sng
 type List a = [a]
 
+{-@ inline empty @-}
 {-@
-inline empty
 empty :: { xs : List a | length xs = 0 }
 @-}
 empty :: List a
 empty = []
 
+{-@ inline cons @-}
 {-@
-inline cons
 cons :: a -> xs : List a -> { ys : List a | length ys = 1 + length xs }
 @-}
 cons :: a -> List a -> List a
 cons a b = a:b
 
+{-@ reflect elemAt @-}
 {-@
-reflect elemAt
 elemAt :: n : Nat -> { xs : List a | length xs > n } -> a
 @-}
 elemAt :: Nat -> List a -> a
 elemAt 0 (x:_) = x
 elemAt i (_:xs) = elemAt (i-1) xs
 
+{-@ reflect take @-}
 {-@
-reflect take
 take
   :: n : Nat
   -> { xs : List a | length xs >= n }
@@ -57,16 +57,17 @@ take :: Nat -> List a -> List a
 take 0 _ = []
 take i (x:xs) = x:(take (i-1) xs)
 
+
+{-@ measure length @-}
 {-@
-measure length
 length :: xs : List a -> Nat
 @-}
 length :: List a -> Nat
 length [] = 0
 length (_:xs) = 1 + length xs
 
+{-@ reflect append @-}
 {-@
-reflect append
 append ::
   xs : List a ->
   ys : List a ->

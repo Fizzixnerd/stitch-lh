@@ -10,6 +10,7 @@
 --
 ----------------------------------------------------------------------------
 
+{-# LANGUAGE GADTSyntax #-}
 {-# LANGUAGE LambdaCase #-}
 {-# OPTIONS_GHC -fplugin=LiquidHaskell #-}
 {-@ LIQUID "--exact-data-cons" @-}
@@ -25,20 +26,19 @@ import Language.Stitch.LH.Data.Nat as Nat
 import Text.PrettyPrint.ANSI.Leijen
 
 {-@
-data UExp
-  = UVar Nat
-  | UGlobal String
-  | ULam Ty UExp
-  | UApp UExp UExp
-  | ULet UExp UExp
-  | UArith UExp ArithOp UExp
-  | UCond UExp UExp UExp
-  | UFix UExp
-  | UIntE Int
-  | UBoolE Bool
+data UExp where
+  UVar :: Nat -> UExp
+  | UGlobal :: String -> UExp
+  | ULam :: Ty -> UExp -> UExp
+  | UApp :: UExp -> UExp -> UExp
+  | ULet :: UExp -> UExp -> UExp
+  | UArith :: UExp -> ArithOp -> UExp -> UExp
+  | UCond :: UExp -> UExp -> UExp -> UExp
+  | UFix :: UExp -> UExp
+  | UIntE :: Int -> UExp
+  | UBoolE :: Bool -> UExp
 @-}
 
--- | Unchecked expression
 data UExp
   = UVar Nat
   | UGlobal String
@@ -52,8 +52,10 @@ data UExp
   | UBoolE Bool
   deriving (Eq, Show)
 
+-- | Unchecked expression
+
+{-@ measure numFreeVars @-}
 {-@
-measure numFreeVars
 numFreeVars :: UExp -> Nat
 @-}
 numFreeVars :: UExp -> Nat
@@ -70,10 +72,8 @@ numFreeVars (UFix body) = numFreeVars body
 numFreeVars (UIntE _) = 0
 numFreeVars (UBoolE _) = 0
 
-{-@
-type VarsSmallerThan N = { e : UExp | numFreeVars e <= N }
-type ClosedUExp = { e : UExp | numFreeVars e == 0 }
-@-}
+{-@ type VarsSmallerThan N = { e : UExp | numFreeVars e <= N } @-}
+{-@ type ClosedUExp = { e : UExp | numFreeVars e == 0 } @-}
 
 -- An expression paired with the bound for the valid
 -- variable indices

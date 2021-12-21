@@ -32,9 +32,9 @@ import Prelude hiding (lookup)
 -- XXX: put lookup in the logic and use rewrite rules to give it
 -- an implementation
 -- XXX: GHC only seems to fire rules if the definitions are eta expanded.
+{-@ reflect lookup @-}
+{-@ lazy lookup @-}
 {-@
-reflect lookup
-lazy lookup
 lookup
   :: forall <p :: b -> Bool>.
      Ord a
@@ -51,9 +51,9 @@ lookup a m = lookup a m
 
 {-# RULES "lookupImpl" lookup = Map.lookup #-}
 
+{-@ reflect insert @-}
+{-@ lazy insert @-}
 {-@
-reflect insert
-lazy insert
 insert
   :: forall <p :: b -> Bool>.
      Ord a
@@ -68,9 +68,9 @@ insert a b m = insert a b m
 
 {-# RULES "insertImpl" insert = Map.insert #-}
 
+{-@ reflect empty @-}
+{-@ lazy empty @-}
 {-@
-reflect empty
-lazy empty
 empty :: forall <p :: b -> Bool>. Map a b<p>
 @-}
 empty :: Map a b
