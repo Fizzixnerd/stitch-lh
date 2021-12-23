@@ -546,4 +546,4 @@
 (assert (= (strLen lit$36$Ty) 2))
 (assert (= (strLen lit$36$Bool) 4))
 (assert (= (strLen lit$36$funResTy) 8))
-(exit)
+(push 1)

@@ -1,6 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
-{-# OPTIONS_GHC -fplugin=LiquidHaskell #-}
+{-# OPTIONS_GHC -fplugin=LiquidHaskell -Wno-incomplete-patterns #-}
 {-@ LIQUID "--exact-data-cons" @-}
+{-@ LIQUID "--smtsolver=cvc4" @-}
 -- ple is necessary to reason about the evaluation of checkBindings
 {-@ LIQUID "--ple" @-}
 
@@ -23,7 +24,7 @@ import qualified Data.Map as Map
 -- XXX: If we don't import Data.Set, LH fails with: Unbound symbol Set_mem
 import qualified Data.Set as Set
 import Language.Haskell.Liquid.ProofCombinators
-import Language.Stitch.LH.Data.List (List(..))
+import Language.Stitch.LH.Data.List (List)
 import qualified Language.Stitch.LH.Data.List as List
 import Language.Stitch.LH.Data.Nat as Nat
 import Language.Stitch.LH.Type
@@ -32,35 +33,34 @@ import Language.Stitch.LH.Pretty
 import Language.Stitch.LH.Unchecked
 import Text.PrettyPrint.ANSI.Leijen
 
-
 {-@ predicate WellTyped E CTX = checkBindings CTX E && numFreeVarsExp E <= List.length CTX @-}
 {-@ type WellTypedExp CTX = { e : Exp | WellTyped e CTX } @-}
 {-@ type FunExp = { e : Exp | isFunTy (exprType e) } @-}
 {-@ type ExpT T = { e : Exp | T = exprType e } @-}
 {-@
-data Exp where
-    Var :: Ty -> Nat -> Exp
-  | Lam :: Ty -> Exp -> Exp
-  | App :: e:FunExp -> (ExpT (funArgTy (exprType e))) -> Exp
-  | Let :: Exp -> Exp -> Exp
-  | Arith :: (ExpT TInt) -> ArithOp -> (ExpT TInt) -> Exp
-  | Cond :: (ExpT TBool) -> a:Exp -> (ExpT (exprType a)) -> Exp
-  | Fix :: ({ e : FunExp | funArgTy (exprType e) = funResTy (exprType e) }) -> Exp
-  | IntE :: Int -> Exp
-  | BoolE :: Bool -> Exp
+data Exp
+  = Var { varTyp :: Ty , varNat :: Nat }
+  | Lam { lamTyp :: Ty , lamBdy :: Exp }
+  | App { appFun :: Exp, appArg :: Exp }
+  | Let { letExp :: Exp, letBdy :: Exp }
+  | Arith { ariLhs :: ExpT TInt, ariOp :: ArithOp, ariRhs :: ExpT TInt }
+  | Cond { conPrc :: ExpT TBool, conCon :: Exp, conAnt :: ExpT (exprType conCon) }
+  | Fix { fixFun :: { e : FunExp | funArgTy (exprType e) = funResTy (exprType e) } }
+  | IntE { intVal :: Int }
+  | BoolE { bolVal :: Bool }
 @-}
 
 -- | Checked expression
 data Exp
-  = Var Ty Nat
-  | Lam Ty Exp
-  | App Exp Exp
-  | Let Exp Exp
-  | Arith Exp ArithOp Exp
-  | Cond Exp Exp Exp
-  | Fix Exp
-  | IntE Int
-  | BoolE Bool
+  = Var { varTyp :: Ty , varNat :: Nat }
+  | Lam { lamTyp :: Ty , lamBdy :: Exp }
+  | App { appFun :: Exp, appArg :: Exp }
+  | Let { letExp :: Exp, letBdy :: Exp }
+  | Arith { ariLhs :: Exp, ariOp :: ArithOp, ariRhs :: Exp }
+  | Cond { conPrc :: Exp, conCon :: Exp, conAnt :: Exp }
+  | Fix { fixFun :: Exp }
+  | IntE { intVal :: Int }
+  | BoolE { bolVal :: Bool }
   deriving Show
 
 -- An expression paired with the bound for the valid
@@ -118,14 +118,14 @@ checkBindings _ (BoolE _) = True
 {-@ rewriteWith aClosedExpIsValidInAnyContext [List.appendLength] @-}
 {-@
 aClosedExpIsValidInAnyContext
-  :: ctx0 : List Ty
-  -> ctx1 : List Ty
+  :: ctx0 : [Ty]
+  -> ctx1 : [Ty]
   -> e : Exp
   -> { WellTyped e ctx0 <=>
        WellTyped e (List.append ctx0 ctx1) && numFreeVarsExp e <= List.length ctx0
      }
 @-}
-aClosedExpIsValidInAnyContext :: List Ty -> List Ty -> Exp -> Proof
+aClosedExpIsValidInAnyContext :: [Ty] -> [Ty] -> Exp -> Proof
 aClosedExpIsValidInAnyContext ctx0 ctx1 e = case e of
   Var _ i ->
     if i < List.length ctx0 then List.elemAtThroughAppend i ctx0 ctx1
@@ -178,11 +178,11 @@ check :: Globals -> UExp -> (Exp -> Ty -> Either TyError b) -> Either TyError b
 check globals = go []
   where
     {-@
-      go :: ts : List Ty
+      go :: ts : [Ty]
          -> VarsSmallerThan (List.length ts)
          -> (e1 : WellTypedExp ts -> { t: Ty | exprType e1 = t } -> Either TyError b)
          -> Either TyError b
-      @-}
+    @-}
     go :: List Ty -> UExp -> (Exp -> Ty -> Either TyError b) -> Either TyError b
     go ctx ue f = case ue of
       UVar i -> let ty = List.elemAt i ctx
@@ -269,6 +269,14 @@ check globals = go []
 
       UBoolE b -> f (BoolE b) TBool
 
+-- XXX REMOVE THIS IF NOT NEEDED
+{-@
+data TyError where
+    OutOfScopeGlobal :: String -> TyError
+  | NotAFunction :: ScopedUExp -> Ty -> TyError
+  | TypeMismatch :: ScopedUExp -> Ty -> Ty -> ScopedUExp -> TyError
+@-}
+
 data TyError
   = OutOfScopeGlobal String
   | NotAFunction ScopedUExp Ty
@@ -293,20 +301,20 @@ prettyTypedExp e ty = pretty e <+> text ":" <+> pretty ty
 inTheExpression :: ScopedUExp -> Doc
 inTheExpression e = text "in the expression" <+> squotes (pretty e)
 
-
 {-@
-data TypedExp = TypedExp (e :: WellTypedExp []) {t:Ty | exprType e = t}
+data TypedExp = TypedExp { texp :: WellTypedExp [], tty :: { t:Ty | exprType texp = t } }
 @-}
-data TypedExp = TypedExp Exp Ty
+data TypedExp = TypedExp { texp :: Exp, tty :: Ty }
 
 {-@ measure typedExpType @-}
+{-@ typedExpType :: e:TypedExp -> { t:Ty | exprType (texp e) = t } @-}
 typedExpType :: TypedExp -> Ty
 typedExpType (TypedExp _ ty) = ty
 
 -- | The global variable environment maps variables to
 -- expressions
--- XXX: Using newtype causes LH to crash.
-data Globals = Globals (Map String TypedExp)
+-- YYY: Using newtype causes LH to crash.
+newtype Globals = Globals (Map String TypedExp)
 
 -- | An empty global variable environment
 emptyGlobals :: Globals
@@ -316,8 +324,8 @@ emptyGlobals = Globals Map.empty
 {-@ extendGlobals :: String -> TypedExp -> Globals -> Globals @-}
 extendGlobals :: String -> TypedExp -> Globals -> Globals
 extendGlobals var e (Globals globals)
-  -- XXX: Using $ causes LH to fail here
-  = Globals (Map.insert var e globals)
+  -- YYY: Using $ causes LH to fail here
+  = Globals $ Map.insert var e globals
 
 -- | Lookup a global variable.
 lookupGlobal

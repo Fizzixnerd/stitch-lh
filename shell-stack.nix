@@ -4,7 +4,7 @@
 
 pkgs.haskell.lib.buildStackProject ({
   name = "stitch-lh";
-  buildInputs = with pkgs; [ git z3 ];
+  buildInputs = with pkgs; [ git cvc4 ];
   ghc = ghc;
   LANG = "en_US.utf8";
 })

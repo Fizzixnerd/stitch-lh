@@ -1,5 +1,8 @@
 {-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}
 {-# OPTIONS_GHC -fplugin=LiquidHaskell -Wno-incomplete-patterns #-}
+{-@ LIQUID "--exact-data-cons" @-}
+{-@ LIQUID "--ple" @-}
+{-@ LIQUID "--counter-examples" @-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -16,8 +19,7 @@
 module Language.Stitch.LH.Type where
 
 import Language.Stitch.LH.Util (Prec, topPrec, maybeParens)
-
-import Data.Set
+import Language.Stitch.LH.Data.Nat (Nat)
 import Text.PrettyPrint.ANSI.Leijen
 import Data.Hashable
 import GHC.Generics
@@ -25,25 +27,15 @@ import GHC.Generics
 -- | The type of a Stitch expression
 data Ty = TInt
         | TBool
-        | TFun { funArgTy' :: Ty, funResTy' :: Ty }
+        | TFun { funArgTy :: Ty, funResTy :: Ty }
   deriving (Show, Eq, Generic, Hashable)
 
 {-@
-data Ty where
-  TInt :: Ty
-  | TBool :: Ty
-  | TFun :: Ty -> Ty -> Ty
+data Ty =
+    TInt
+  | TBool
+  | TFun { funArgTy :: Ty, funResTy :: Ty }
 @-}
-
-{-@ measure funArgTy @-}
-{-@ funArgTy :: { v:Ty | isFunTy v } -> Ty @-}
-funArgTy :: Ty -> Ty
-funArgTy (TFun a _) = a
-
-{-@ measure funResTy @-}
-{-@ funResTy :: { v:Ty | isFunTy v } -> Ty @-}
-funResTy :: Ty -> Ty
-funResTy (TFun _ r) = r
 
 {-@ measure isFunTy @-}
 isFunTy :: Ty -> Bool

@@ -58,7 +58,7 @@ library
                       Language.Stitch.LH.Data.Nat
 
   hs-source-dirs:     src
-  ghc-options:        -Wall -Wno-unticked-promoted-constructors
+  ghc-options:        -Wall -Wno-unticked-promoted-constructors -fplugin=LiquidHaskell -fplugin-opt=LiquidHaskell:--smtsolver=cvc4
   default-language:   Haskell2010
 
 executable stitch-lh

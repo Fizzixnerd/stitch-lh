@@ -22,7 +22,7 @@ import qualified Data.Map as Map
 -- XXX: Needed to avoid missing symbols in LH
 import qualified Data.Set as Set
 import Language.Haskell.Liquid.ProofCombinators (Proof, trivial, (?))
-import Language.Stitch.LH.Data.List (List(..))
+import Language.Stitch.LH.Data.List (List)
 import qualified Language.Stitch.LH.Data.List as List
 import Language.Stitch.LH.Data.Nat
 import Language.Stitch.LH.Check
@@ -44,16 +44,20 @@ import Text.PrettyPrint.ANSI.Leijen
 -- > λ#:Int. #1 * #0 : Int -> Int
 --
 
+  
+
+{-@ type ValueT T = { v:Value | valueType v = T } @-}
 {-@
-type ValueT T = { v:Value | valueType v = T }
-data Value
-       = VInt Int
-       | VBool Bool
-       | VFun (vfun_e :: FunExp)
-              (   { v:Value | funArgTy (exprType vfun_e) = valueType v }
-               -> { vr:Value | funResTy (exprType vfun_e) = valueType vr }
-              )
+data Value where
+  VInt :: Int -> Value
+  | VBool :: Bool -> Value
+  | VFun ::
+       vfun_e:FunExp
+    -> (   { v:Value | funArgTy (exprType vfun_e) = valueType v }
+        -> { vr:Value | funResTy (exprType vfun_e) = valueType vr } )
+    -> Value
 @-}
+
 data Value = VInt Int | VBool Bool | VFun Exp (Value -> Value)
 
 instance Pretty Value where
@@ -63,19 +67,18 @@ instance Pretty Value where
     VBool False -> text "false"
     VFun e _ -> pretty (ScopedExp (numFreeVarsExp e) e)
 
+{-@ reflect mapValueType @-}
 {-@
-// XXX: Why can't we reflect map?
-// XXX: If using measure, LH fails with: elaborate makeKnowledge failed on
-reflect mapValueType
+// YYY: Why can't we reflect map?
+// YYY: If using measure, LH fails with: elaborate makeKnowledge failed on
 mapValueType
   :: vs:List Value
-  -> { ts:List Ty
+  -> { ts:[Ty]
      | List.length ts = List.length vs
      }
 @-}
 mapValueType :: List Value -> List Ty
-mapValueType Nil = Nil
-mapValueType (Cons x xs) = Cons (valueType x) (mapValueType xs)
+mapValueType = map valueType
 
 {-@ measure valueType @-}
 valueType :: Value -> Ty
@@ -86,26 +89,26 @@ valueType (VFun e _) = exprType e
 -- | Evaluate an expression, using big-step semantics.
 {-@
 eval
-  :: e : WellTypedExp Nil
+  :: e : WellTypedExp []
   -> { v:Value | valueType v = exprType e }
 @-}
 eval :: Exp -> Value
-eval = evalWithCtx Nil
+eval = evalWithCtx []
 
 {-@
-evalWithCtx :: ctx:List Value -> e:WellTypedExp (mapValueType ctx) -> ValueT (exprType e)
+evalWithCtx :: ctx:[Value] -> e:WellTypedExp (mapValueType ctx) -> ValueT (exprType e)
 @-}
 evalWithCtx :: List Value -> Exp -> Value
 evalWithCtx ctx e0 = case e0 of
     Var _ i ->
       List.elemAt i (ctx ? mapValueType ctx) ? elemAtThroughMapValueType_prop i ctx
 
-    Lam ty_arg e -> VFun e0 ((\v -> evalWithCtx (Cons v ctx) e) ? funResTy_lam_prop ty_arg e)
+    Lam ty_arg e -> VFun e0 ((\v -> evalWithCtx (v:ctx) e) ? funResTy_lam_prop ty_arg e)
 
     App e1 e2 -> case evalWithCtx ctx e1 of
       VFun _ f -> f (evalWithCtx ctx e2)
 
-    Let e1 e2 -> evalWithCtx (Cons (evalWithCtx ctx e1) ctx) e2
+    Let e1 e2 -> evalWithCtx ((evalWithCtx ctx e1):ctx) e2
 
     Arith e1 op e2 -> evalArithOp op (evalWithCtx ctx e1) (evalWithCtx ctx e2)
 
@@ -120,9 +123,9 @@ evalWithCtx ctx e0 = case e0 of
 
     BoolE b -> VBool b
 
+{-@ lazy valueFix @-}
 {-@
 valueFix :: t:Ty -> (ValueT t -> ValueT t) -> ValueT t
-lazy valueFix
 @-}
 valueFix :: Ty -> (Value -> Value) -> Value
 valueFix t f = f (valueFix t f)
@@ -169,8 +172,8 @@ elemAtThroughMapValueType_prop
   -> { List.elemAt i (mapValueType ctx) = valueType (List.elemAt i ctx) }
 @-}
 elemAtThroughMapValueType_prop :: Nat -> List Value -> Proof
-elemAtThroughMapValueType_prop 0 (Cons _ _) = trivial
-elemAtThroughMapValueType_prop i (Cons _ ctxs) =
+elemAtThroughMapValueType_prop 0 (_:_) = trivial
+elemAtThroughMapValueType_prop i (_:ctxs) =
   elemAtThroughMapValueType_prop (i - 1) ctxs
 
 {-@

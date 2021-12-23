@@ -12,8 +12,11 @@ mkShell {
     git
     nix
     z3
+    cvc4
     which
     glibcLocales
+    gmp
+    libffi
     cacert
     haskell.compiler.ghc8102
   ];
