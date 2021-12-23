@@ -1,7 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
-{-# OPTIONS_GHC -fplugin=LiquidHaskell -Wno-incomplete-patterns #-}
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 {-@ LIQUID "--exact-data-cons" @-}
-{-@ LIQUID "--smtsolver=cvc4" @-}
 -- ple is necessary to reason about the evaluation of checkBindings
 {-@ LIQUID "--ple" @-}
 

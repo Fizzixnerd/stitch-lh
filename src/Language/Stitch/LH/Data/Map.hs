@@ -1,5 +1,4 @@
 {-# LANGUAGE LambdaCase #-}
-{-# OPTIONS_GHC -fplugin=LiquidHaskell -fplugin-opt=LiquidHaskell=--smtsolver=cvc4 #-}
 {-# OPTIONS_GHC -fenable-rewrite-rules -Wno-inline-rule-shadowing #-}
 
 -----------------------------------------------------------------------------

@@ -11,107 +11,106 @@
 <hr>
 Put mouse over identifiers to see inferred types
 <pre><span class=hs-linenum> 1: </span><a class=annot href="#"><span class=annottext>{VV##556 : GHC.Types.Module | $k_##557}</span><span class='hs-comment'>{-# LANGUAGE LambdaCase #-}</span></a>
-<span class=hs-linenum> 2: </span><span class='hs-comment'>{-# OPTIONS_GHC -fplugin=LiquidHaskell #-}</span>
-<span class=hs-linenum> 3: </span><span class='hs-comment'>{-# OPTIONS_GHC -fenable-rewrite-rules -Wno-inline-rule-shadowing #-}</span>
-<span class=hs-linenum> 4: </span>
-<span class=hs-linenum> 5: </span><span class='hs-comment'>-----------------------------------------------------------------------------</span>
-<span class=hs-linenum> 6: </span><span class='hs-comment'>-- |</span>
-<span class=hs-linenum> 7: </span><span class='hs-comment'>-- Module      :  Language.Stitch.LH.Data.Map</span>
-<span class=hs-linenum> 8: </span><span class='hs-comment'>-- Copyright   :  (C) 2021 Facundo Domínguez</span>
-<span class=hs-linenum> 9: </span><span class='hs-comment'>-- License     :  BSD-style (see LICENSE)</span>
-<span class=hs-linenum>10: </span><span class='hs-comment'>-- Stability   :  experimental</span>
-<span class=hs-linenum>11: </span><span class='hs-comment'>--</span>
-<span class=hs-linenum>12: </span><span class='hs-comment'>-- An interface of maps that can be used in reflected definitions</span>
-<span class=hs-linenum>13: </span><span class='hs-comment'>-- with LH. It is not currently used in the rest of stitch-lh, but</span>
-<span class=hs-linenum>14: </span><span class='hs-comment'>-- I'm keeping it for now, just for the record.</span>
-<span class=hs-linenum>15: </span><span class='hs-comment'>--</span>
-<span class=hs-linenum>16: </span><span class='hs-comment'>-- The ability to reflect operations on Maps comes into play when</span>
-<span class=hs-linenum>17: </span><span class='hs-comment'>-- trying to reflect the typechecker.</span>
-<span class=hs-linenum>18: </span><span class='hs-comment'>----------------------------------------------------------------------------</span>
-<span class=hs-linenum>19: </span>
-<span class=hs-linenum>20: </span><span class='hs-keyword'>module</span> <span class='hs-conid'>Language.Stitch.LH.Data.Map</span>
-<span class=hs-linenum>21: </span>  <span class='hs-layout'>(</span> <span class='hs-keyword'>module</span> <span class='hs-conid'>Language.Stitch.LH.Data.Map</span>
-<span class=hs-linenum>22: </span>  <span class='hs-layout'>,</span> <span class='hs-conid'>Map</span>
-<span class=hs-linenum>23: </span>  <span class='hs-layout'>)</span>
-<span class=hs-linenum>24: </span>  <span class='hs-keyword'>where</span>
-<span class=hs-linenum>25: </span>
-<span class=hs-linenum>26: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Data.Map</span> <span class='hs-layout'>(</span><span class='hs-conid'>Map</span><span class='hs-layout'>)</span>
-<span class=hs-linenum>27: </span><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data.Map</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>Map</span>
-<span class=hs-linenum>28: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Data.Set</span> <span class='hs-layout'>(</span><span class='hs-conid'>Set</span><span class='hs-layout'>)</span>
-<span class=hs-linenum>29: </span><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data.Set</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>Set</span>
-<span class=hs-linenum>30: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Prelude</span> <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span><span class='hs-varid'>lookup</span><span class='hs-layout'>)</span>
-<span class=hs-linenum>31: </span>
-<span class=hs-linenum>32: </span><span class='hs-comment'>-- XXX: put lookup in the logic and use rewrite rules to give it</span>
-<span class=hs-linenum>33: </span><span class='hs-comment'>-- an implementation</span>
-<span class=hs-linenum>34: </span><span class='hs-comment'>-- XXX: GHC only seems to fire rules if the definitions are eta expanded.</span>
-<span class=hs-linenum>35: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>reflect</span> <span class='hs-varid'>lookup</span> <span class='hs-keyword'>@-}</span>
-<span class=hs-linenum>36: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>lazy</span> <span class='hs-varid'>lookup</span> <span class='hs-keyword'>@-}</span>
-<span class=hs-linenum>37: </span><span class='hs-keyword'>{-@</span>
-<span class=hs-linenum>38: </span><span class='hs-definition'>lookup</span>
-<span class=hs-linenum>39: </span>  <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Bool</span><span class='hs-varop'>&gt;.</span>
-<span class=hs-linenum>40: </span>     <span class='hs-conid'>Ord</span> <span class='hs-varid'>a</span>
-<span class=hs-linenum>41: </span>  <span class='hs-keyglyph'>=&gt;</span> <span class='hs-varid'>k</span> <span class='hs-conop'>:</span> <span class='hs-varid'>a</span>
-<span class=hs-linenum>42: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>m</span> <span class='hs-conop'>:</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span>
-<span class=hs-linenum>43: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>{ r :</span> <span class='hs-conid'>Maybe</span> <span class='hs-varid'>b</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span>
-<span class=hs-linenum>44: </span>     <span class='hs-keyword'>| not (Set.member k (mapKeys m)) &lt;=&gt; r = Nothing
+<span class=hs-linenum> 2: </span><span class='hs-comment'>{-# OPTIONS_GHC -fenable-rewrite-rules -Wno-inline-rule-shadowing #-}</span>
+<span class=hs-linenum> 3: </span>
+<span class=hs-linenum> 4: </span><span class='hs-comment'>-----------------------------------------------------------------------------</span>
+<span class=hs-linenum> 5: </span><span class='hs-comment'>-- |</span>
+<span class=hs-linenum> 6: </span><span class='hs-comment'>-- Module      :  Language.Stitch.LH.Data.Map</span>
+<span class=hs-linenum> 7: </span><span class='hs-comment'>-- Copyright   :  (C) 2021 Facundo Domínguez</span>
+<span class=hs-linenum> 8: </span><span class='hs-comment'>-- License     :  BSD-style (see LICENSE)</span>
+<span class=hs-linenum> 9: </span><span class='hs-comment'>-- Stability   :  experimental</span>
+<span class=hs-linenum>10: </span><span class='hs-comment'>--</span>
+<span class=hs-linenum>11: </span><span class='hs-comment'>-- An interface of maps that can be used in reflected definitions</span>
+<span class=hs-linenum>12: </span><span class='hs-comment'>-- with LH. It is not currently used in the rest of stitch-lh, but</span>
+<span class=hs-linenum>13: </span><span class='hs-comment'>-- I'm keeping it for now, just for the record.</span>
+<span class=hs-linenum>14: </span><span class='hs-comment'>--</span>
+<span class=hs-linenum>15: </span><span class='hs-comment'>-- The ability to reflect operations on Maps comes into play when</span>
+<span class=hs-linenum>16: </span><span class='hs-comment'>-- trying to reflect the typechecker.</span>
+<span class=hs-linenum>17: </span><span class='hs-comment'>----------------------------------------------------------------------------</span>
+<span class=hs-linenum>18: </span>
+<span class=hs-linenum>19: </span><span class='hs-keyword'>module</span> <span class='hs-conid'>Language.Stitch.LH.Data.Map</span>
+<span class=hs-linenum>20: </span>  <span class='hs-layout'>(</span> <span class='hs-keyword'>module</span> <span class='hs-conid'>Language.Stitch.LH.Data.Map</span>
+<span class=hs-linenum>21: </span>  <span class='hs-layout'>,</span> <span class='hs-conid'>Map</span>
+<span class=hs-linenum>22: </span>  <span class='hs-layout'>)</span>
+<span class=hs-linenum>23: </span>  <span class='hs-keyword'>where</span>
+<span class=hs-linenum>24: </span>
+<span class=hs-linenum>25: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Data.Map</span> <span class='hs-layout'>(</span><span class='hs-conid'>Map</span><span class='hs-layout'>)</span>
+<span class=hs-linenum>26: </span><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data.Map</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>Map</span>
+<span class=hs-linenum>27: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Data.Set</span> <span class='hs-layout'>(</span><span class='hs-conid'>Set</span><span class='hs-layout'>)</span>
+<span class=hs-linenum>28: </span><span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data.Set</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>Set</span>
+<span class=hs-linenum>29: </span><span class='hs-keyword'>import</span> <span class='hs-conid'>Prelude</span> <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span><span class='hs-varid'>lookup</span><span class='hs-layout'>)</span>
+<span class=hs-linenum>30: </span>
+<span class=hs-linenum>31: </span><span class='hs-comment'>-- XXX: put lookup in the logic and use rewrite rules to give it</span>
+<span class=hs-linenum>32: </span><span class='hs-comment'>-- an implementation</span>
+<span class=hs-linenum>33: </span><span class='hs-comment'>-- XXX: GHC only seems to fire rules if the definitions are eta expanded.</span>
+<span class=hs-linenum>34: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>reflect</span> <span class='hs-varid'>lookup</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>35: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>lazy</span> <span class='hs-varid'>lookup</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>36: </span><span class='hs-keyword'>{-@</span>
+<span class=hs-linenum>37: </span><span class='hs-definition'>lookup</span>
+<span class=hs-linenum>38: </span>  <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Bool</span><span class='hs-varop'>&gt;.</span>
+<span class=hs-linenum>39: </span>     <span class='hs-conid'>Ord</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum>40: </span>  <span class='hs-keyglyph'>=&gt;</span> <span class='hs-varid'>k</span> <span class='hs-conop'>:</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum>41: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>m</span> <span class='hs-conop'>:</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span>
+<span class=hs-linenum>42: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>{ r :</span> <span class='hs-conid'>Maybe</span> <span class='hs-varid'>b</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span>
+<span class=hs-linenum>43: </span>     <span class='hs-keyword'>| not (Set.member k (mapKeys m)) &lt;=&gt; r = Nothing
      }</span>
-<span class=hs-linenum>46: </span><span class='hs-keyword'>@-}</span>
-<span class=hs-linenum>47: </span><span class='hs-definition'>lookup</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Ord</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Maybe</span> <span class='hs-varid'>b</span>
-<span class=hs-linenum>48: </span><a class=annot href="#"><span class=annottext>forall a b &lt;p :: b -&gt; Bool&gt;.
+<span class=hs-linenum>45: </span><span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>46: </span><span class='hs-definition'>lookup</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Ord</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Maybe</span> <span class='hs-varid'>b</span>
+<span class=hs-linenum>47: </span><a class=annot href="#"><span class=annottext>forall a b &lt;p :: b -&gt; Bool&gt;.
 (GHC.Classes.Ord&lt;[]&gt; a) =&gt;
-lq_tmp$x##429:a -&gt; lq_tmp$x##430:(Data.Map.Internal.Map a {VV : b&lt;p&gt; | true}) -&gt; {r : (GHC.Maybe.Maybe {VV : b&lt;p&gt; | true}) | not (Set_mem lq_tmp$x##429 (mapKeys lq_tmp$x##430)) &lt;=&gt; r == GHC.Maybe.Nothing}</span><span class='hs-definition'>lookup</span></a> <a class=annot href="#"><span class=annottext>a</span><span class='hs-varid'>a</span></a> <a class=annot href="#"><span class=annottext>(Data.Map.Internal.Map a {VV : b | papp1 p VV})</span><span class='hs-varid'>m</span></a> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>lookup</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##460 : a | lq_tmp$x##460 == a##a1TK}</span><span class='hs-varid'>a</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##463 : (Data.Map.Internal.Map a {lq_tmp$x##462 : b | papp1 p lq_tmp$x##462}) | lq_tmp$x##463 == m##a1TL}</span><span class='hs-varid'>m</span></a>
-<span class=hs-linenum>49: </span>  <span class='hs-keyword'>where</span>
-<span class=hs-linenum>50: </span>    <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Set.empty</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Set</span> <span class='hs-conid'>()</span> <span class='hs-comment'>-- quiet warning about unused imports</span>
-<span class=hs-linenum>51: </span>
-<span class=hs-linenum>52: </span><span class='hs-comment'>{-# RULES "lookupImpl" lookup = Map.lookup #-}</span>
-<span class=hs-linenum>53: </span>
-<span class=hs-linenum>54: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>reflect</span> <span class='hs-varid'>insert</span> <span class='hs-keyword'>@-}</span>
-<span class=hs-linenum>55: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>lazy</span> <span class='hs-varid'>insert</span> <span class='hs-keyword'>@-}</span>
-<span class=hs-linenum>56: </span><span class='hs-keyword'>{-@</span>
-<span class=hs-linenum>57: </span><span class='hs-definition'>insert</span>
-<span class=hs-linenum>58: </span>  <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Bool</span><span class='hs-varop'>&gt;.</span>
-<span class=hs-linenum>59: </span>     <span class='hs-conid'>Ord</span> <span class='hs-varid'>a</span>
-<span class=hs-linenum>60: </span>  <span class='hs-keyglyph'>=&gt;</span> <span class='hs-varid'>a</span>
-<span class=hs-linenum>61: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span>
-<span class=hs-linenum>62: </span>
+lq_tmp$x##429:a -&gt; lq_tmp$x##430:(Data.Map.Internal.Map a {VV : b&lt;p&gt; | true}) -&gt; {r : (GHC.Maybe.Maybe {VV : b&lt;p&gt; | true}) | not (Set_mem lq_tmp$x##429 (mapKeys lq_tmp$x##430)) &lt;=&gt; r == GHC.Maybe.Nothing}</span><span class='hs-definition'>lookup</span></a> <a class=annot href="#"><span class=annottext>a</span><span class='hs-varid'>a</span></a> <a class=annot href="#"><span class=annottext>(Data.Map.Internal.Map a {VV : b | papp1 p VV})</span><span class='hs-varid'>m</span></a> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>lookup</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##460 : a | lq_tmp$x##460 == a##ajLd}</span><span class='hs-varid'>a</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##463 : (Data.Map.Internal.Map a {lq_tmp$x##462 : b | papp1 p lq_tmp$x##462}) | lq_tmp$x##463 == m##ajLe}</span><span class='hs-varid'>m</span></a>
+<span class=hs-linenum>48: </span>  <span class='hs-keyword'>where</span>
+<span class=hs-linenum>49: </span>    <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Set.empty</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Set</span> <span class='hs-conid'>()</span> <span class='hs-comment'>-- quiet warning about unused imports</span>
+<span class=hs-linenum>50: </span>
+<span class=hs-linenum>51: </span><span class='hs-comment'>{-# RULES "lookupImpl" lookup = Map.lookup #-}</span>
+<span class=hs-linenum>52: </span>
+<span class=hs-linenum>53: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>reflect</span> <span class='hs-varid'>insert</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>54: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>lazy</span> <span class='hs-varid'>insert</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>55: </span><span class='hs-keyword'>{-@</span>
+<span class=hs-linenum>56: </span><span class='hs-definition'>insert</span>
+<span class=hs-linenum>57: </span>  <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Bool</span><span class='hs-varop'>&gt;.</span>
+<span class=hs-linenum>58: </span>     <span class='hs-conid'>Ord</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum>59: </span>  <span class='hs-keyglyph'>=&gt;</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum>60: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span>
+<span class=hs-linenum>61: </span>
+<span class=hs-linenum>62: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span>
 <span class=hs-linenum>63: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span>
-<span class=hs-linenum>64: </span>  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span>
-<span class=hs-linenum>65: </span><span class='hs-keyword'>@-}</span>
-<span class=hs-linenum>66: </span><span class='hs-definition'>insert</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Ord</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span>
-<span class=hs-linenum>67: </span><a class=annot href="#"><span class=annottext>forall a b &lt;p :: b -&gt; Bool&gt;.
+<span class=hs-linenum>64: </span><span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>65: </span><span class='hs-definition'>insert</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Ord</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span>
+<span class=hs-linenum>66: </span><a class=annot href="#"><span class=annottext>forall a b &lt;p :: b -&gt; Bool&gt;.
 (GHC.Classes.Ord&lt;[]&gt; a) =&gt;
-lq_tmp$x##468:a -&gt; lq_tmp$x##469:{VV : b&lt;p&gt; | true} -&gt; lq_tmp$x##470:(Data.Map.Internal.Map a {VV : b&lt;p&gt; | true}) -&gt; (Data.Map.Internal.Map a {VV : b&lt;p&gt; | true})</span><span class='hs-definition'>insert</span></a> <a class=annot href="#"><span class=annottext>a</span><span class='hs-varid'>a</span></a> <a class=annot href="#"><span class=annottext>{VV : b | papp1 p VV}</span><span class='hs-varid'>b</span></a> <a class=annot href="#"><span class=annottext>(Data.Map.Internal.Map a {VV : b | papp1 p VV})</span><span class='hs-varid'>m</span></a> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>insert</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##505 : a | lq_tmp$x##505 == a##a1TM}</span><span class='hs-varid'>a</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##506 : b | papp1 p lq_tmp$x##506
-                     &amp;&amp; lq_tmp$x##506 == b##a1TN}</span><span class='hs-varid'>b</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##509 : (Data.Map.Internal.Map a {lq_tmp$x##508 : b | papp1 p lq_tmp$x##508}) | lq_tmp$x##509 == m##a1TO}</span><span class='hs-varid'>m</span></a>
-<span class=hs-linenum>68: </span>
-<span class=hs-linenum>69: </span><span class='hs-comment'>{-# RULES "insertImpl" insert = Map.insert #-}</span>
-<span class=hs-linenum>70: </span>
-<span class=hs-linenum>71: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>reflect</span> <span class='hs-varid'>empty</span> <span class='hs-keyword'>@-}</span>
-<span class=hs-linenum>72: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>lazy</span> <span class='hs-varid'>empty</span> <span class='hs-keyword'>@-}</span>
-<span class=hs-linenum>73: </span><span class='hs-keyword'>{-@</span>
-<span class=hs-linenum>74: </span><span class='hs-definition'>empty</span> <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Bool</span><span class='hs-varop'>&gt;.</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span>
-<span class=hs-linenum>75: </span><span class='hs-keyword'>@-}</span>
-<span class=hs-linenum>76: </span><span class='hs-definition'>empty</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span>
-<span class=hs-linenum>77: </span><a class=annot href="#"><span class=annottext>forall a b &lt;p :: b -&gt; Bool&gt;.
+lq_tmp$x##468:a -&gt; lq_tmp$x##469:{VV : b&lt;p&gt; | true} -&gt; lq_tmp$x##470:(Data.Map.Internal.Map a {VV : b&lt;p&gt; | true}) -&gt; (Data.Map.Internal.Map a {VV : b&lt;p&gt; | true})</span><span class='hs-definition'>insert</span></a> <a class=annot href="#"><span class=annottext>a</span><span class='hs-varid'>a</span></a> <a class=annot href="#"><span class=annottext>{VV : b | papp1 p VV}</span><span class='hs-varid'>b</span></a> <a class=annot href="#"><span class=annottext>(Data.Map.Internal.Map a {VV : b | papp1 p VV})</span><span class='hs-varid'>m</span></a> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>insert</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##505 : a | lq_tmp$x##505 == a##ajLf}</span><span class='hs-varid'>a</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##506 : b | papp1 p lq_tmp$x##506
+                     &amp;&amp; lq_tmp$x##506 == b##ajLg}</span><span class='hs-varid'>b</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##509 : (Data.Map.Internal.Map a {lq_tmp$x##508 : b | papp1 p lq_tmp$x##508}) | lq_tmp$x##509 == m##ajLh}</span><span class='hs-varid'>m</span></a>
+<span class=hs-linenum>67: </span>
+<span class=hs-linenum>68: </span><span class='hs-comment'>{-# RULES "insertImpl" insert = Map.insert #-}</span>
+<span class=hs-linenum>69: </span>
+<span class=hs-linenum>70: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>reflect</span> <span class='hs-varid'>empty</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>71: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>lazy</span> <span class='hs-varid'>empty</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>72: </span><span class='hs-keyword'>{-@</span>
+<span class=hs-linenum>73: </span><span class='hs-definition'>empty</span> <span class='hs-keyglyph'>::</span> <span class='hs-keyword'>forall</span> <span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Bool</span><span class='hs-varop'>&gt;.</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span><span class='hs-varop'>&lt;</span><span class='hs-varid'>p</span><span class='hs-varop'>&gt;</span>
+<span class=hs-linenum>74: </span><span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>75: </span><span class='hs-definition'>empty</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span>
+<span class=hs-linenum>76: </span><a class=annot href="#"><span class=annottext>forall a b &lt;p :: b -&gt; Bool&gt;.
 (Data.Map.Internal.Map a {VV : b&lt;p&gt; | true})</span><span class='hs-definition'>empty</span></a> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>goEmpty</span> <a class=annot href="#"><span class=annottext>{lq_tmp$x##554 : () | lq_tmp$x##554 == GHC.Tuple.()}</span><span class='hs-conid'>()</span></a>
-<span class=hs-linenum>78: </span>
-<span class=hs-linenum>79: </span><span class='hs-comment'>-- XXX: Making goEmpty local to empty, causes LH to crash when</span>
-<span class=hs-linenum>80: </span><span class='hs-comment'>-- building Check.hs.</span>
-<span class=hs-linenum>81: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>reflect</span> <span class='hs-varid'>goEmpty</span> <span class='hs-keyword'>@-}</span>
-<span class=hs-linenum>82: </span><span class='hs-comment'>-- XXX: For some reason, GHC aggrees to fire emptyImpl only if</span>
-<span class=hs-linenum>83: </span><span class='hs-comment'>-- empty appears in an auxiliar definition like this one.</span>
-<span class=hs-linenum>84: </span><span class='hs-definition'>goEmpty</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>()</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span>
-<span class=hs-linenum>85: </span><a class=annot href="#"><span class=annottext>forall a b .
+<span class=hs-linenum>77: </span>
+<span class=hs-linenum>78: </span><span class='hs-comment'>-- XXX: Making goEmpty local to empty, causes LH to crash when</span>
+<span class=hs-linenum>79: </span><span class='hs-comment'>-- building Check.hs.</span>
+<span class=hs-linenum>80: </span><span class='hs-keyword'>{-@</span> <span class='hs-varid'>reflect</span> <span class='hs-varid'>goEmpty</span> <span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>81: </span><span class='hs-comment'>-- XXX: For some reason, GHC aggrees to fire emptyImpl only if</span>
+<span class=hs-linenum>82: </span><span class='hs-comment'>-- empty appears in an auxiliar definition like this one.</span>
+<span class=hs-linenum>83: </span><span class='hs-definition'>goEmpty</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>()</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span>
+<span class=hs-linenum>84: </span><a class=annot href="#"><span class=annottext>forall a b .
 lq_tmp$x##517:() -&gt; {VV : (Data.Map.Internal.Map a b) | VV == Language.Stitch.LH.Data.Map.goEmpty lq_tmp$x##517
                                                         &amp;&amp; VV == Language.Stitch.LH.Data.Map.goEmpty GHC.Tuple.()}</span><span class='hs-definition'>goEmpty</span></a> <span class='hs-conid'>()</span> <span class='hs-keyglyph'>=</span> <a class=annot href="#"><span class=annottext>forall a b .
 lq_tmp$x##517:() -&gt; {VV : (Data.Map.Internal.Map a b) | VV == Language.Stitch.LH.Data.Map.goEmpty lq_tmp$x##517
                                                         &amp;&amp; VV == Language.Stitch.LH.Data.Map.goEmpty GHC.Tuple.()}</span><span class='hs-varid'>goEmpty</span></a> <a class=annot href="#"><span class=annottext>{lq_tmp$x##540 : () | lq_tmp$x##540 == GHC.Tuple.()}</span><span class='hs-conid'>()</span></a>
-<span class=hs-linenum>86: </span>
-<span class=hs-linenum>87: </span><span class='hs-comment'>{-# RULES "emptyImpl" goEmpty () = Map.empty #-}</span>
+<span class=hs-linenum>85: </span>
+<span class=hs-linenum>86: </span><span class='hs-comment'>{-# RULES "emptyImpl" goEmpty () = Map.empty #-}</span>
+<span class=hs-linenum>87: </span>
 <span class=hs-linenum>88: </span>
-<span class=hs-linenum>89: </span>
-<span class=hs-linenum>90: </span><span class='hs-keyword'>{-@</span>
-<span class=hs-linenum>91: </span><span class='hs-definition'>measure</span> <span class='hs-varid'>mapKeys</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Set</span> <span class='hs-varid'>a</span>
-<span class=hs-linenum>92: </span><span class='hs-keyword'>@-}</span>
+<span class=hs-linenum>89: </span><span class='hs-keyword'>{-@</span>
+<span class=hs-linenum>90: </span><span class='hs-definition'>measure</span> <span class='hs-varid'>mapKeys</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Map</span> <span class='hs-varid'>a</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Set</span> <span class='hs-varid'>a</span>
+<span class=hs-linenum>91: </span><span class='hs-keyword'>@-}</span>
 </pre>
 </body>
 </html>
